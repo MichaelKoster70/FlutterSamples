@@ -9,7 +9,7 @@ set(PROJECT_NAME "windows_background_task_plugin")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 # Invoke the build for native code shared with the other target platforms.
-# This can be changed to accommodate different builds.
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/winrt")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/host")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/client")
 

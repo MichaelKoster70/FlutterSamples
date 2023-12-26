@@ -1,51 +1,56 @@
+# ----------------------------------------------------------------------------
+# <copyright company="Michael Koster">
+#   Copyright (c) Michael Koster. All rights reserved.
+#   Licensed under the MIT License.
+# </copyright>
+# ----------------------------------------------------------------------------
 # The Flutter tooling requires that developers have a version of Visual Studio
 # installed that includes CMake 3.14 or later. You should not increase this
 # version, as doing so will cause the plugin to fail to compile for some
 # customers of the plugin.
+# ----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.14)
-set(CPPWINRT_VERSION "2.0.230706.1")
 
 # Project-level configuration.
 set(PROJECT_NAME "windows_background_task_host")
 project(${PROJECT_NAME} LANGUAGES CXX)
-include(FetchContent)
-
-FetchContent_Declare(nuget
-URL "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-URL_HASH SHA256=cc50b7f3b7e41ef2ea07b56e4e8c36f20357e1534c89b958f9498aa9f24685f40
-  DOWNLOAD_NO_EXTRACT true
-)
-
-find_program(NUGET nuget)
-if (NOT NUGET)
-    message("Nuget.exe not found, trying to download.")
-    FetchContent_MakeAvailable(nuget)
-    set(NUGET ${nuget_SOURCE_DIR}/nuget.exe)
-endif()
-
-execute_process(COMMAND
-    ${NUGET} install Microsoft.Windows.CppWinRT -Version ${CPPWINRT_VERSION} -OutputDirectory packages
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    RESULT_VARIABLE ret)
-if (NOT ret EQUAL 0)
-    message(FATAL_ERROR "Failed to install nuget package Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}")
-endif()
-
-set(CPPWINRT ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}/bin/cppwinrt.exe)
-execute_process(COMMAND
-    ${CPPWINRT} -input sdk -output include
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    RESULT_VARIABLE ret)
-if (NOT ret EQUAL 0)
-    message(FATAL_ERROR "Failed to run cppwinrt.exe")
-endif()
-
-include_directories(BEFORE SYSTEM ${CMAKE_BINARY_DIR}/include)
 
 add_executable(${PROJECT_NAME} WIN32 
+  "flutter_engine_host.cpp"
+  "flutter_window.cpp"
+  "win32_window.cpp"
   "main.cpp"
+  "utils.cpp"
+  "com_initializer.cpp"
+  "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
+  "host.rc"
+  "host.manifest"
 )
 
+# make sure the WinRT hgeaders are generated before building this project
+add_dependencies(${PROJECT_NAME} "winrt_header_generator")
+
+# add the generated WinRT headers to the include path
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/include)
+
+# Apply the standard set of build settings.
+apply_standard_settings(${PROJECT_NAME})
+
+# Add preprocessor definitions for the build version.
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MAJOR=${FLUTTER_VERSION_MAJOR}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MINOR=${FLUTTER_VERSION_MINOR}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_PATCH=${FLUTTER_VERSION_PATCH}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTTER_VERSION_BUILD}")
+
+# Add dependency libraries and include directories. Add any application-specific dependencies here.
+target_link_libraries(${PROJECT_NAME} PRIVATE flutter flutter_wrapper_app)
+#target_link_libraries(${PROJECT_NAME} PRIVATE "dwmapi.lib")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
+
+add_dependencies(${PROJECT_NAME} flutter)
+
+# Set the C++ standard to C++ 17
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

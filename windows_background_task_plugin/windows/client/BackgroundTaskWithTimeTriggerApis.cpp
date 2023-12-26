@@ -12,11 +12,12 @@
 // ----------------------------------------------------------------------------
 #include "DllExports.h"
 #include <windows.h>
-#include "BackgroundTaskClientApi.h"
-#include "BackgroundTaskHelper.h"
 #include "winrt/Windows.Foundation.h"
 #include "winrt/Windows.Foundation.Collections.h"
 #include "winrt/Windows.ApplicationModel.Background.h"
+#include "BackgroundTaskClientApi.h"
+#include "BackgroundTaskHelper.h"
+
 
 // ----------------------------------------------------------------------------
 // namespace usings

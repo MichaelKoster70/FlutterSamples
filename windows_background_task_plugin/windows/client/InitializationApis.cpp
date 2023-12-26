@@ -11,8 +11,8 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "DllExports.h"
-#include <string>
 #include <windows.h>
+#include <string>
 #include "BackgroundTaskClientApi.h"
 #include "winrt/Windows.Foundation.h"
 

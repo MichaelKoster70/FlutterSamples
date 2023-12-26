@@ -1,33 +1,7 @@
-// ----------------------------------------------------------------------------
-// <copyright company="Michael Koster">
-//   Copyright (c) Michael Koster. All rights reserved.
-//   Licensed under the MIT License.
-// </copyright>
-// ----------------------------------------------------------------------------
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:windows_background_task_plugin/windows_background_task_client.dart';
 
-@pragma('vm:entry-point')
-void backgroundMain() {
-  stdout.writeln('Hello, background_main::main()!');
-
-  stdout.writeln('press enter to exit...');
-  stdin.readLineSync();
-  exit(0);
-}
-
-void main() async {
-  final client = WindowsBackgroundTaskClient();
-  client.initialize("windows_background_task_example");
-
+void main() {
   runApp(const MyApp());
-
-  // NativeCallable<Void Function(Int64, Int64)> nativeCallable =
-  //     NativeCallable<Void Function(Int64, Int64)>(
-  //         'background_main', Pointer.fromFunction(background_main, 0, 0));
 }
 
 class MyApp extends StatelessWidget {
