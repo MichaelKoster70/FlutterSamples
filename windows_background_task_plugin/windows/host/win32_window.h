@@ -86,19 +86,16 @@ public:
    /// <returns>Depends on the message</returns>
    virtual LRESULT MessageHandler(HWND hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept;
 
-  // Called when CreateAndShow is called, allowing subclass window-related
-  // setup. Subclasses should return false if setup fails.
-
    /// <summary>
    /// Called at the end of Create, allowing subclass window-related setup.
    /// </summary>
    /// <returns>true if successful, else false</returns>
-   virtual bool OnCreate() = 0;
+   virtual bool OnCreate();
 
    /// <summary>
    /// Called when Destroy is called.
    /// </summary>
-   virtual void OnDestroy() = 0;
+   virtual void OnDestroy();
 
 private:
    friend class WindowClassRegistrar;
@@ -106,7 +103,7 @@ private:
   /// <summary>
   /// A callback function, which you define in your application, that processes messages sent to a window. 
   /// </summary>
-  /// <param name="hWnd">A handle to the window</param>
+  /// <param name="hWnd">A handle to the window.</param>
   /// <param name="message">The message</param>
   /// <param name="wParam">Additional message information</param>
   /// <param name="lParam">Additional message information</param>
@@ -118,7 +115,7 @@ private:
   static LRESULT CALLBACK WndProc(HWND const hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept;
 
   /// <summary>
-  /// Retrieves a class instance pointer for |hWnd|.
+  /// Retrieves a class instance pointer for supplied window handle
   /// </summary>
   /// <param name="hWnd">The window handle.</param>
   /// <returns>The instanc pointer.</returns>

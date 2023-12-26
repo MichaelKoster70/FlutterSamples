@@ -106,12 +106,12 @@ public:
     /// Called at the end of Create, allowing subclass window-related setup.
     /// </summary>
     /// <returns>true if successful, else false</returns>
-  virtual bool OnCreate() = 0;
+  virtual bool OnCreate();
 
   /// <summary>
   /// Called when Destroy is called.
   /// </summary>
-  virtual void OnDestroy() = 0;
+  virtual void OnDestroy();
 
  private:
   friend class WindowClassRegistrar;

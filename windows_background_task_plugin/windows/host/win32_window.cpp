@@ -9,8 +9,6 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "win32_window.h"
-
-#include <dwmapi.h>
 #include <flutter_windows.h>
 #include "resource.h"
 
@@ -208,4 +206,15 @@ HWND Win32Window::GetHandle()
 void Win32Window::SetQuitOnClose(bool quitOnClose)
 {
    _quitOnClose = quitOnClose;
+}
+
+bool Win32Window::OnCreate()
+{
+   //EMPY_BODY - override in subclass
+   return true;
+}
+
+void Win32Window::OnDestroy()
+{
+   //EMPY_BODY - override in subclass
 }

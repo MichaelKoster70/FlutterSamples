@@ -163,10 +163,10 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const hWnd, UINT const message, WPARA
 {
    if (message == WM_NCCREATE)
    {
-      auto windowStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
-      SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(windowStruct->lpCreateParams));
+      auto wndStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
+      SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wndStruct->lpCreateParams));
 
-      auto that = static_cast<Win32Window*>(windowStruct->lpCreateParams);
+      auto that = static_cast<Win32Window*>(wndStruct->lpCreateParams);
       EnableNonClientDpiScaling(hWnd);
       that->_hWindow = hWnd;
    }
@@ -275,6 +275,17 @@ HWND Win32Window::GetHandle()
 void Win32Window::SetQuitOnClose(bool quitOnClose)
 {
    _quitOnClose = quitOnClose;
+}
+
+bool Win32Window::OnCreate()
+{
+   //EMPY_BODY - override in subclass
+   return true;
+}
+
+void Win32Window::OnDestroy()
+{
+   //EMPY_BODY - override in subclass
 }
 
 void Win32Window::UpdateTheme(HWND const hWindow)

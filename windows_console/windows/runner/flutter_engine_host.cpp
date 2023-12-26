@@ -32,6 +32,8 @@ int FlutterEngineHost::Run(const std::wstring& title)
       return EXIT_FAILURE;
    }
 
+   _window.SetQuitOnClose(true);
+
    // run the main message loop
    ::MSG msg;
    while (::GetMessage(&msg, nullptr, 0, 0))
