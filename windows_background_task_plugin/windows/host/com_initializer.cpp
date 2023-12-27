@@ -10,17 +10,18 @@
 // ----------------------------------------------------------------------------
 #include <windows.h>
 #include "com_initializer.h"
+#include <winrt/base.h>
 
 // ----------------------------------------------------------------------------
 // Implementations
 // ----------------------------------------------------------------------------
 
-ComInitializer::ComInitializer(_In_ DWORD dwCoInit)
+ComInitializer::ComInitializer()
 {
-   (void)::CoInitializeEx(nullptr, dwCoInit);
+   winrt::init_apartment();
 }
 
 ComInitializer::~ComInitializer()
 {
-   ::CoUninitialize();
+   winrt::uninit_apartment();
 }

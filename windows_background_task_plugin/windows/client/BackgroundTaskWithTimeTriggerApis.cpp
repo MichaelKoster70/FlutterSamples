@@ -45,7 +45,8 @@ HRESULT RegisterComBackgroundTaskTimer
    _In_ GUID* taskClassId,
    _In_ LPCWSTR taskName,
    _In_ UINT32 freshnessTime,
-   _In_ BOOL oneShot
+   _In_ BOOL oneShot,
+   _In_ ConditionType conditionType[]
 )
 {
    try
@@ -53,14 +54,37 @@ HRESULT RegisterComBackgroundTaskTimer
       if (taskName == nullptr || taskClassId == nullptr)
       {
          return E_INVALIDARG;
-      };
+      }
 
       RequestBackgroundAccess();
 
+      auto conditions = winrt::single_threaded_vector<IBackgroundCondition>();
+
       auto trigger = TimeTrigger(freshnessTime, oneShot);
       auto classId = guid(*taskClassId);
-      BackgroundTaskHelper::Register(taskName, classId, trigger);
+      BackgroundTaskHelper::Register(taskName, classId, trigger, conditions);
 
+      return S_OK;
+   }
+   catch (...)
+   {
+      return to_hresult();
+   }
+}
+
+HRESULT UnregisterBackgroundTask
+(
+   _In_ LPCWSTR taskName
+)
+{
+   if (taskName == nullptr)
+   {
+      return E_INVALIDARG;
+   }
+
+   try
+   {
+      BackgroundTaskHelper::Unregister(taskName);
       return S_OK;
    }
    catch (...)

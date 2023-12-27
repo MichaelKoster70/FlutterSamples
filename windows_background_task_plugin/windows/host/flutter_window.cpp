@@ -10,7 +10,10 @@
 // ----------------------------------------------------------------------------
 #include "flutter_window.h"
 #include <optional>
+#include <memory>
 #include "flutter/generated_plugin_registrant.h"
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
 
 // ----------------------------------------------------------------------------
 // Implementations
@@ -42,6 +45,12 @@ bool FlutterWindow::OnCreate()
 
    // Register plugins.
    RegisterPlugins(_flutterController->engine());
+
+   // Set-up a MethodChannel to handle calls from/to Flutter.
+   flutter::MethodChannel<> channel(_flutterController->engine()->messenger(), "windows.universal/background_task", &flutter::StandardMethodCodec::GetInstance());
+
+
+
    SetChildContent(_flutterController->view()->GetNativeWindow());
 
    return true;

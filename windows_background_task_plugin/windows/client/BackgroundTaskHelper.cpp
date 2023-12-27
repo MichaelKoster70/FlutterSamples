@@ -18,13 +18,14 @@
 // Namespace usings
 // ----------------------------------------------------------------------------
 using namespace winrt;
+using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel::Background;
 
 // ----------------------------------------------------------------------------
 // Class Implementation
 // ----------------------------------------------------------------------------
 
-IBackgroundTaskRegistration BackgroundTaskHelper::RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger)
+IBackgroundTaskRegistration BackgroundTaskHelper::RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions)
 {
    // Check if the task is already registered.
    auto registration = GetTaskRegistration(taskName);
@@ -43,57 +44,34 @@ IBackgroundTaskRegistration BackgroundTaskHelper::RegisterAndGetRegistration(hst
    return registration;
 }
 
-IBackgroundTaskRegistration BackgroundTaskHelper::RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger, IBackgroundCondition condition)
+void BackgroundTaskHelper::Register(hstring taskName, guid classId, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions)
 {
    // Check if the task is already registered.
+   if (IsTaskRegistered(taskName))
+   {
+      return;
+   }
+
+   // Register the background task with name and trigger.
+   auto builder = BackgroundTaskBuilder();
+   builder.Name(taskName);
+   builder.SetTrigger(trigger);
+   for (auto condition : conditions)
+   {
+      builder.AddCondition(condition);
+   }
+   builder.SetTaskEntryPointClsid(classId);
+   builder.Register();
+}
+
+void BackgroundTaskHelper::Unregister(hstring taskName)
+{
+   // Unregister the background task with name.
    auto registration = GetTaskRegistration(taskName);
    if (registration != nullptr)
    {
-      return registration;
+      registration.Unregister(true);
    }
-
-   // Register the background task with name and trigger.
-   auto builder = BackgroundTaskBuilder();
-   builder.Name(taskName);
-   builder.SetTrigger(trigger);
-   builder.AddCondition(condition);
-   builder.SetTaskEntryPointClsid(classId);
-   registration = builder.Register();
-
-   return registration;
-}
-
-void BackgroundTaskHelper::Register(hstring taskName, guid classId, IBackgroundTrigger trigger)
-{
-   // Check if the task is already registered.
-   if (IsTaskRegistered(taskName))
-   {
-      return;
-   }
-
-   // Register the background task with name and trigger.
-   auto builder = BackgroundTaskBuilder();
-   builder.Name(taskName);
-   builder.SetTrigger(trigger);
-   builder.SetTaskEntryPointClsid(classId);
-   builder.Register();
-}
-
-void BackgroundTaskHelper::Register(hstring taskName, guid classId, IBackgroundTrigger trigger, IBackgroundCondition condition)
-{
-   // Check if the task is already registered.
-   if (IsTaskRegistered(taskName))
-   {
-      return;
-   }
-
-   // Register the background task with name and trigger.
-   auto builder = BackgroundTaskBuilder();
-   builder.Name(taskName);
-   builder.SetTrigger(trigger);
-   builder.AddCondition(condition);
-   builder.SetTaskEntryPointClsid(classId);
-   builder.Register();
 }
 
 bool BackgroundTaskHelper::IsTaskRegistered(hstring taskName)

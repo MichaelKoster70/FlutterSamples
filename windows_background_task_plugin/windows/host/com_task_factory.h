@@ -4,36 +4,35 @@
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
+#pragma once
 
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "flutter_engine_host.h"
-#include <optional>
-#include "flutter/generated_plugin_registrant.h"
 
 // ----------------------------------------------------------------------------
-// Implementation
+// Declarations
 // ----------------------------------------------------------------------------
-FlutterEngineHost::FlutterEngineHost(const flutter::DartProject& project)
-   : _window(project) {}
 
-FlutterEngineHost::~FlutterEngineHost()
+/// <summary>
+/// COM class factory for creating the background task instances.
+/// </summary>
+template <typename F>
+struct TaskFactory : implements<TaskFactory<F>, IClassFactory>
 {
-   //EMPTY_BODY
-}
-
-bool FlutterEngineHost::Run(const std::wstring& title, bool exitProcessOnEngineShutdown)
-{
-   auto success = _window.Create(title);
-   if (success)
+   HRESULT __stdcall CreateInstance(_In_opt_ IUnknown* aggregateInterface, _In_ REFIID interfaceId, _Outptr_ VOID** object) noexcept final
    {
-      _window.SetQuitOnClose(exitProcessOnEngineShutdown);
+        if (aggregateInterface != NULL)
+        {
+             return CLASS_E_NOAGGREGATION;
+        }
+    
+        return make<F>().as(interfaceId, object);
    }
-   return success;
-}
 
-void FlutterEngineHost::Shutdown()
-{
-   _window.Destroy();
-}
+   HRESULT __stdcall LockServer(BOOL lock) noexcept final
+   {
+   UNREFERENCED_PARAMETER(lock);
+   return S_OK;
+   }
+};

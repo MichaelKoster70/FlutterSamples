@@ -55,7 +55,6 @@ void CreateAndAttachConsole()
    }
 }
 
-
 void ConfigureDartProject(flutter::DartProject& project)
 {
    auto commandLineArguments = GetCommandLineArguments();

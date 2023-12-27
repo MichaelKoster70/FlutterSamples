@@ -19,7 +19,7 @@ void backgroundMain() {
   exit(0);
 }
 
-void main() async {
+void main(List<String> args) async {
   final client = WindowsBackgroundTaskClient();
   client.initialize("windows_background_task_example");
 

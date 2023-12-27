@@ -36,8 +36,14 @@ public:
   /// Creates a minimal view and initializes the Flutter engine.
   /// </summary>
   /// <param name="title">The title of the window.</param>
-  /// <returns>The exit code.</returns>
-  int Run(const std::wstring& title);
+  /// <param name="exitProcessOnEngineShutdown">Whether to exit the process when the engine shuts down.</param>
+  /// <returns>true if the engine started successfully.</returns>
+  bool Run(const std::wstring& title, bool exitProcessOnEngineShutdown);
+
+  /// <summary>
+  /// Stops the Flutter engine and destroys the window.
+  /// </summary>
+  void Shutdown();
 
  private:
    FlutterWindow _window;

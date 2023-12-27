@@ -18,10 +18,12 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 add_executable(${PROJECT_NAME} WIN32 
   "flutter_engine_host.cpp"
   "flutter_window.cpp"
+  "flutter_method_channel.cpp"
   "win32_window.cpp"
   "main.cpp"
   "utils.cpp"
   "com_initializer.cpp"
+  "com_dart_background_task.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "host.rc"
   "host.manifest"

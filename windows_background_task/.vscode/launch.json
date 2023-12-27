@@ -1,10 +1,12 @@
 {
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [   
         {
             "name": "main",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": ["--dart-entrypoint-args", "'arg1' 'xxx'", "arg2"]
         }
     ]
 }

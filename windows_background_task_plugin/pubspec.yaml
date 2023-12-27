@@ -18,6 +18,7 @@ dependencies:
   flutter:
     sdk: flutter
   ffi: ^2.0.0
+  win32: ^5.0.0
 
 dev_dependencies:
   flutter_test:

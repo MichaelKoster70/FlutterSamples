@@ -6,13 +6,17 @@
 // ----------------------------------------------------------------------------
 #pragma once
 
-// -----------------------------------------------------------------------------
-// Function declarations
-// -----------------------------------------------------------------------------
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+// -----------------------------------------------------------------------------
+// Types and constants
+// -----------------------------------------------------------------------------
+
+// GUID for the COM background task class
+#define CLSID_ComDartBackgroundTask "88F46315-0A89-4911-9199-6BB496C14533"
 
 /// <summary>
 /// Enum holding all possible conditions for a background task next to its trigger.
@@ -64,6 +68,10 @@ typedef enum _CompletionStatus
    eCompletionStatusFailed = 3
 } CompletionStatus;
 
+// -----------------------------------------------------------------------------
+// Function declarations
+// -----------------------------------------------------------------------------
+
 /// <summary>
 /// Initializes the background task client.
 /// </summary>
@@ -78,16 +86,14 @@ HRESULT Initialize
    _In_ LPCWSTR applicationId
 );
 
-// register a one time time triggere task with no conditions
-
-
 /// <summary>
-/// Registers a one shot timer triggered background task with no conditions.
+/// Registers a one shot timer triggered background task with optional conditions.
 /// </summary>
+/// <param name="taskClassId">The COM class identifier of the background task provider.</param>
 /// <param name="taskName">The name of the task.</param>
 /// <param name="freshnessTime">The freshness time in minutes (minimum 15).</param>
 /// <param name="oneShot">TRUE if the time event trigger will be used once; FALSE if it will be used each time freshnessTime elapses.</param>
-/// <param name="taskClassId">The COM class identifier of the background task provider.</param>
+/// <param name="conditionType">The optional condition type array.</param>
 /// <returns>The result code, 0 for success</returns>
 BACKGROUND_TASK_CLIENT_API
 HRESULT RegisterComBackgroundTaskTimer
@@ -95,20 +101,20 @@ HRESULT RegisterComBackgroundTaskTimer
    _In_ GUID* taskClassId,
    _In_ LPCWSTR taskName,
    _In_ UINT32 freshnessTime,
-   _In_ BOOL oneShot
-);
-
-BACKGROUND_TASK_CLIENT_API
-HRESULT RegisterComBackgroundTaskTimerWithConditions
-(
-   _In_ GUID* taskClassId,
-   _In_ LPCWSTR taskName,
-   _In_ UINT32 freshnessTime,
    _In_ BOOL oneShot,
-
-   _In_ LPCWSTR conditions
+   _In_ ConditionType conditionType[]
 );
 
+/// <summary>
+/// Unregisters a background task.
+/// </summary>
+/// <param name="taskName">The name of the task.</param>
+/// <returns>The result code, 0 for success</returns>
+BACKGROUND_TASK_CLIENT_API
+HRESULT UnregisterBackgroundTask
+(
+   _In_ LPCWSTR taskName
+);
 
 /// <summary>
 /// Uninitializes the background task client.

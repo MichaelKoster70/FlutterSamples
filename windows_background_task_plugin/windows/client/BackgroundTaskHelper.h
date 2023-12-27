@@ -10,6 +10,7 @@
 // Namespace usings
 // ----------------------------------------------------------------------------
 using namespace winrt;
+using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::ApplicationModel::Background;
 
 // ----------------------------------------------------------------------------
@@ -31,18 +32,9 @@ public:
    /// <param name="taskName">The task name.</param>
    /// <param name="classId">The COM class ID imnplementing the task.</param>
    /// <param name="trigger">The task trigger to use.</param>
+   /// <param name="conditions">The optional task conditions to use.</param>
    /// <returns>The background task registration instance.</returns>
-   static IBackgroundTaskRegistration RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger);
-
-   /// <summary>
-   /// Registers a COM based background task returning the background task registration with a single condition.
-   /// </summary>
-   /// <param name="taskName">The task name.</param>
-   /// <param name="classId">The COM class ID imnplementing the task.</param>
-   /// <param name="trigger">The task trigger to use.</param>
-   /// <param name="condition">The task condition to use.</param>
-   /// <returns>The background task registration instance.</returns>
-   static IBackgroundTaskRegistration RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger, IBackgroundCondition condition);
+   static IBackgroundTaskRegistration RegisterAndGetRegistration(hstring taskName, guid classId, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions);
 
    /// <summary>
    /// Registers a COM based background task.
@@ -50,17 +42,13 @@ public:
    /// <param name="taskName">The task name.</param>
    /// <param name="classId">The COM class ID imnplementing the task.</param>
    /// <param name="trigger">The task trigger to use.</param>
-   static void Register(hstring taskName, guid classId, IBackgroundTrigger trigger);
+   /// <param name="conditions">The optional task conditions to use.</param>
+   static void Register(hstring taskName, guid classId, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions);
 
    /// <summary>
-   /// Registers a COM based background task with a single condition.
+   /// Unregisters a background task.
    /// </summary>
    /// <param name="taskName">The task name.</param>
-   /// <param name="classId">The COM class ID imnplementing the task.</param>
-   /// <param name="trigger">The task trigger to use.</param>
-   /// <param name="condition">The task condition to use.</param>
-   static void Register(hstring taskName, guid classId, IBackgroundTrigger trigger, IBackgroundCondition condition);
-
    static void Unregister(hstring taskName);
 
 private:

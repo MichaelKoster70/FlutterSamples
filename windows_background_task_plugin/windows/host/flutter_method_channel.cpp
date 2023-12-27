@@ -4,18 +4,14 @@
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
-#pragma once
 
 // ----------------------------------------------------------------------------
-// Class definition
+// Includes
 // ----------------------------------------------------------------------------
+#include "flutter_method_channel.h"
+#include <flutter/standard_method_codec.h>
 
-/// <summary>
-/// Utility class to initialize COM in a scope.
-/// </summary>
-class ComInitializer
+FlutterMethodChannel::FlutterMethodChannel(flutter::BinaryMessenger* messenger, const std::string& channelName)
 {
-public:
-    ComInitializer();
-    ~ComInitializer();
-};
+   _channel = std::make_unique<flutter::MethodChannel<>>(messenger, channelName, &flutter::StandardMethodCodec::GetInstance());
+}

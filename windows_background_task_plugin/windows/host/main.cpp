@@ -10,9 +10,19 @@
 // ----------------------------------------------------------------------------
 #include <flutter/dart_project.h>
 #include <windows.h>
-#include "com_initializer.h"
+#include <unknwn.h>
+#include "winrt/Windows.Foundation.h"
+#include "winrt/Windows.ApplicationModel.Background.h"
 #include "flutter_engine_host.h"
 #include "utils.h"
+#include "com_initializer.h"
+#include "com_dart_background_task.h"
+#include "com_register_process_for_type.h"
+
+// ----------------------------------------------------------------------------
+// Globals
+// ----------------------------------------------------------------------------
+ flutter::DartProject g_project(L"data");
 
 // ----------------------------------------------------------------------------
 // App entry point
@@ -27,13 +37,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    // Create a console for the process
    CreateAndAttachConsoleIfNeeded();
 
-   // Initialize COM, so that it is available for use in the flutter engine and plugins.
-   auto comInitializer = ComInitializer(COINIT_MULTITHREADED);
+   // Initialize WinRT COM, so that it is available for use in the flutter engine and plugins.
+   auto comInitializer = ComInitializer();
 
-   flutter::DartProject project(L"data");
+   // Configure the Dart project
+   ConfigureDartProject(g_project);
 
-   ConfigureDartProject(project);
+   // Register the COM server for the background task
+   ComRegisterProcessForType<ComDartBackgroundTask> registerType;
 
-   FlutterEngineHost host(project);
-   return host.Run(L"windows_background_task_host");
+   registerType.Register();
+
+   //FlutterEngineHost host(project);
+   //return host.Run(L"windows_background_task_host", false);
+
+   // run the main message loop
+   ::MSG msg;
+   while (::GetMessage(&msg, nullptr, 0, 0))
+   {
+      ::TranslateMessage(&msg);
+      ::DispatchMessage(&msg);
+   }
+
+   return static_cast<int>(msg.wParam);
 }
