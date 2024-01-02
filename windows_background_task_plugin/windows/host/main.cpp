@@ -56,20 +56,5 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
    registerType.Register();
 
-   //FlutterEngineHost::SetMainThread(::GetCurrentThreadId());
-
-   // run the main message loop
-   //::MSG msg;
-   //while (::GetMessage(&msg, nullptr, 0, 0))
-   //{
-   //   if (FlutterEngineHost::ThreadMessageHandler(msg.message, msg.wParam, msg.lParam) != 0)
-   //   {
-   //      ::TranslateMessage(&msg);
-   //      ::DispatchMessage(&msg);
-   //   }
-   //}
-
-   //return static_cast<int>(msg.wParam);
-
    return 0;
 }

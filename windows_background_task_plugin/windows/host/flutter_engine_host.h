@@ -18,6 +18,8 @@
 
 using ShutdownHandler = std::function<void()>;
 
+using TaskMessageHandlerFunction = std::function<bool(UINT const message, WPARAM const wParam, LPARAM const lParam)>;
+
 /// <summary>
 /// Class proividing a host for a Flutter engine minimal Window support.
 /// </summary>
@@ -34,9 +36,6 @@ public:
   explicit FlutterEngineHost(const flutter::DartProject& project);
   virtual ~FlutterEngineHost();
 
-  static void SetMainThread(DWORD mainThreadId) { _mainThreadId = mainThreadId; }
-
-  static LRESULT ThreadMessageHandler(UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept;
 
   /// <summary>
   /// Sets the handler for the NotifyChannelInitialized method called by flutter.
@@ -50,7 +49,20 @@ public:
   /// <param name="handler">The handler delegate</param>
   void SetShutdownHandler(ShutdownHandler handler);
 
-  void SendRunMessage(const std::wstring& title);
+  /// <summary>
+  /// Posts a Windows message to the main platform thread.
+  /// </summary>
+  /// <param name="message">The message to post.</param>
+  /// <param name="wParam">Message specific parameters.</param>
+  /// <param name="lParam">Message specific parameters.</param>
+  void PostTaskMessage(UINT const message, WPARAM const wParam, LPARAM const lParam);
+
+  /// <summary>
+  /// Sets the handler processing task messages.
+  /// </summary>
+  /// <param name="handler"></param>
+  void SetTaskMessageHandler(TaskMessageHandlerFunction handler);
+
 
   /// <summary>
   /// Creates a minimal view and initializes the Flutter engine.
@@ -71,9 +83,12 @@ public:
   void Shutdown();
 
  private:
-   static DWORD _mainThreadId;
+    bool HandleThreadMessage(UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept;
+
+   DWORD _platformThreadId = 0;
    FlutterWindow _window;
    std::wstring _title;
+   TaskMessageHandlerFunction _taskMessageHandler;
    NotifyChannelInitializedHandler _notifyChannelInitializedHandler;
    ShutdownHandler _shutdownHandler;
 };

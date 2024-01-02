@@ -58,6 +58,10 @@ void FlutterWindow::OnDestroy()
 {
    if (_flutterController)
    {
+      if (_destroyHandler)
+      {
+         _destroyHandler();
+      }
       _flutterController = nullptr;
    }
 }

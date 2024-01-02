@@ -105,7 +105,6 @@ HRESULT UnregisterAllBackgroundTasks()
 // function to request access to background tasks, throws an exception if access is denied
 void RequestBackgroundAccess()
 {
-   // 
    if (g_backgroundAccessRequested)
    {
       return;

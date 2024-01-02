@@ -9,16 +9,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:windows_background_task_plugin/windows_background_task_client.dart';
-//import 'package:windows_background_task_plugin/windows_background_task_host.dart';
+import 'package:windows_background_task_plugin/windows_background_task_host.dart';
 
 @pragma('vm:entry-point')
 void backgroundCallback() {
   stdout.writeln('Hello, backgroundCallback()!');
-  //WindowsBackgroundTaskHost().executeTask((taskName) {});
+  WindowsBackgroundTaskHost().executeTask((taskName) async {
+    stdout.writeln('Hello, executeTask($taskName)!');
+    return true;
+  });
 
   stdout.writeln('press enter to exit...');
-  stdin.readLineSync();
-  exit(0);
+  // stdin.readLineSync();
+  // exit(0);
 }
 
 void main() async {

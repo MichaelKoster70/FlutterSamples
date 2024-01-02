@@ -50,6 +50,9 @@ struct __declspec(uuid(CLSID_ComDartBackgroundTask))
    void __stdcall OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason);
 
 private:
+   void HandleNotifyChannelInitialized(const std::string& taskName);
+   void HandleExecuteTaskCompleted(bool result);
+
    FlutterEngineHost engineHost;
    BackgroundTaskDeferral taskDeferral = nullptr;
    volatile bool isCanceled = false;

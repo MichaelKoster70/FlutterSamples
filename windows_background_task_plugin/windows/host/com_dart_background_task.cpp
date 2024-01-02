@@ -20,6 +20,14 @@ extern flutter::DartProject g_project;
 extern handle g_processExitEvent;
 
 // ----------------------------------------------------------------------------
+// Consstant
+// ----------------------------------------------------------------------------
+
+// Message sent to the main thread to notify that the channel is initialized.
+const UINT kNotifyChannelInitialized = WM_USER + 2;
+const UINT kExecuteTaskCompleted = WM_USER + 3;
+
+// ----------------------------------------------------------------------------
 // Class Implementation
 // ----------------------------------------------------------------------------
 
@@ -30,6 +38,7 @@ ComDartBackgroundTask::ComDartBackgroundTask()
 
 void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInstance)
 {
+   DebugBreak();
    std::cout << "ComDartBackgroundTask::Run" << std::endl;
 
    // Get the name of the task, use it as identifer on what to call in the dart code
@@ -41,22 +50,56 @@ void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInsta
 
    engineHost.SetNotifyChannelInitializedHandler([this, taskName]() {
       std::cout << "ComDartBackgroundTask::Run - Channel Initialized" << std::endl;
-      engineHost.GetChannel()->ExecuteTask(winrt::to_string(taskName));
-   });
+      engineHost.PostTaskMessage(kNotifyChannelInitialized, NULL, NULL);
+      });
 
-   engineHost.SetShutdownHandler([this]() {
-      std::cout << "ComDartBackgroundTask::Run - Shutdown" << std::endl;
-      taskDeferral.Complete();
-   });
+   engineHost.SetTaskMessageHandler([this, taskName](UINT message, WPARAM wParam, LPARAM lParam)
+      {
+         switch (message)
+         {
+         case kNotifyChannelInitialized:
+            HandleNotifyChannelInitialized(winrt::to_string(taskName));
+            return false;
+         case kExecuteTaskCompleted:
+            HandleExecuteTaskCompleted(wParam);
+            return false;
+
+         default:
+            return true;
+         }
+     });
+
+   //engineHost.SetShutdownHandler([this]()
+   //   {
+   //      std::cout << "ComDartBackgroundTask::Run - Shutdown" << std::endl;
+
+   //   });
 
    engineHost.Run(taskName.c_str());
 
-   check_bool(SetEvent(g_processExitEvent.get()));
+   // mark the task as completed
+   taskDeferral.Complete();
 
+   check_bool(SetEvent(g_processExitEvent.get()));
 }
 
 void  ComDartBackgroundTask::OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason)
 {
    std::cout << "ComDartBackgroundTask::OnCanceled" << std::endl;
    isCanceled = true;
+}
+
+void ComDartBackgroundTask::HandleNotifyChannelInitialized(const std::string& taskName)
+{
+   std::cout << "ComDartBackgroundTask::HandleNotifyChannelInitialized()" << std::endl;
+   engineHost.GetChannel()->ExecuteTask(taskName, [this](bool result)
+      {
+         engineHost.PostTaskMessage(kExecuteTaskCompleted, result, NULL);
+      });
+}
+
+void ComDartBackgroundTask::HandleExecuteTaskCompleted(bool result)
+{
+   std::cout << "ComDartBackgroundTask::HandleExecuteTaskCompleted()" << std::endl;
+   engineHost.Shutdown();
 }

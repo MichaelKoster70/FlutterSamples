@@ -15,6 +15,11 @@
 using NotifyChannelInitializedHandler = std::function<void()>;
 
 /// <summary>
+/// Defines the handler for the ExecuteTask method results.
+/// </summary>
+using ExecuteTaskResultHandler = std::function<void(bool)>;
+
+/// <summary>
 /// Method channel for communicating with Flutter code running in the engine.
 /// </summary>
 class FlutterMethodChannel
@@ -33,8 +38,7 @@ public:
    /// Have the DART VM execute a task with the supplied name.
    /// </summary>
    /// <param name="taskName">The name of the task to execute.</param>
-   /// <returns>True if the task was executed successfully, false otherwise.</returns>
-   bool ExecuteTask(const std::string& taskName);
+   void ExecuteTask(const std::string& taskName, ExecuteTaskResultHandler handler);
 
 private:
    void HandleMethodCall(const flutter::MethodCall< flutter::EncodableValue>& methodCall, std::unique_ptr< flutter::MethodResult< flutter::EncodableValue>> result);

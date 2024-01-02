@@ -11,6 +11,8 @@
 #include "flutter_method_channel.h"
 #include <flutter/standard_method_codec.h>
 #include <flutter/method_result_functions.h>
+#include <iostream>
+#include <Windows.h>
 
 // ----------------------------------------------------------------------------
 // Constants
@@ -41,20 +43,18 @@ void FlutterMethodChannel::SetNotifyChannelInitializedHandler(NotifyChannelIniti
    _notifyChannelInitializedHandler = handler;
 }
 
-bool FlutterMethodChannel::ExecuteTask(const std::string& taskName)
+void FlutterMethodChannel::ExecuteTask(const std::string& taskName, ExecuteTaskResultHandler handler)
 {
-   bool methodResult = false;
    auto argument = std::make_unique<flutter::EncodableValue>(taskName);
    auto resultHandler = std::make_unique<flutter::MethodResultFunctions<>>(
-      [&methodResult](const flutter::EncodableValue* successValue)
+      [this, handler](const flutter::EncodableValue* successValue)
       {
-         methodResult = std::get<bool>(*successValue);
+         auto methodResult = std::get<bool>(*successValue);
+         handler(methodResult);
       },
       nullptr, nullptr);
 
-   _channel.InvokeMethod(taskName, std::move(argument), std::move(resultHandler));
-
-   return methodResult;
+   _channel.InvokeMethod(kExecuteTaskMethodName, std::move(argument), std::move(resultHandler));
 }
 
 void FlutterMethodChannel::HandleMethodCall(const flutter::MethodCall<flutter::EncodableValue>& methodCall, std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)

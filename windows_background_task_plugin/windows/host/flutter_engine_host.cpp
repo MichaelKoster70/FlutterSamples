@@ -13,15 +13,8 @@
 #include "flutter/generated_plugin_registrant.h"
 
 // ----------------------------------------------------------------------------
-// Consstant
-// ----------------------------------------------------------------------------
-const UINT kEngineRun = WM_USER + 1;
-
-// ----------------------------------------------------------------------------
 // Implementation
 // ----------------------------------------------------------------------------
-
-DWORD FlutterEngineHost::_mainThreadId = 0;
 
 FlutterEngineHost::FlutterEngineHost(const flutter::DartProject& project)
    : _window(project) {}
@@ -31,17 +24,14 @@ FlutterEngineHost::~FlutterEngineHost()
    //EMPTY_BODY
 }
 
-LRESULT FlutterEngineHost::ThreadMessageHandler(UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept
+void FlutterEngineHost::SetTaskMessageHandler(TaskMessageHandlerFunction handler)
 {
-   if (message == kEngineRun)
-   {
-      auto engineHost = reinterpret_cast<FlutterEngineHost*>(wparam);
-      auto title = reinterpret_cast<const wchar_t*>(lparam);
-      engineHost->Run(title);
-      return 0;
-   }
+   _taskMessageHandler = handler;
+}
 
-   return 1;
+void FlutterEngineHost::PostTaskMessage(UINT const message, WPARAM const wParam, LPARAM const lParam)
+{
+   ::PostThreadMessage(_platformThreadId, message, wParam, lParam);
 }
 
 bool FlutterEngineHost::Run(const std::wstring& title)
@@ -49,6 +39,7 @@ bool FlutterEngineHost::Run(const std::wstring& title)
    auto success = _window.Create(title);
    if (success)
    {
+      _platformThreadId = ::GetCurrentThreadId();
       _window.SetQuitOnClose(true);
       
       if (_notifyChannelInitializedHandler)
@@ -67,8 +58,11 @@ bool FlutterEngineHost::Run(const std::wstring& title)
       ::MSG msg;
       while (::GetMessage(&msg, nullptr, 0, 0))
       {
-         ::TranslateMessage(&msg);
-         ::DispatchMessage(&msg);
+         if (HandleThreadMessage(msg.message, msg.wParam, msg.lParam))
+         {
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+         }
       }
    }
 
@@ -85,14 +79,16 @@ void FlutterEngineHost::SetShutdownHandler(ShutdownHandler handler)
    _shutdownHandler = handler;
 }
 
-void FlutterEngineHost::SendRunMessage(const std::wstring& title)
-{
-   _title = title;
-
-   PostThreadMessage(_mainThreadId, kEngineRun, reinterpret_cast<WPARAM>(this), reinterpret_cast<LPARAM>(_title.c_str()));
-}
-
 void FlutterEngineHost::Shutdown()
 {
    _window.Destroy();
+}
+
+bool FlutterEngineHost::HandleThreadMessage(UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept
+{
+   if (_taskMessageHandler)
+   {
+      return _taskMessageHandler(message, wparam, lparam);
+   }
+   return true;
 }

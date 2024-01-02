@@ -5,6 +5,8 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,13 +27,14 @@ class _WindowsBackgroundTaskHost implements WindowsBackgroundTaskHost {
   _WindowsBackgroundTaskHost();
 
   @override
-  void executeTask(final BackgroundTaskHandler backgroundTask) async {
+  void executeTask(final BackgroundTaskHandler backgroundTask) {
     WidgetsFlutterBinding.ensureInitialized();
+
     // Setup the method channel
     _backgroundChannel.setMethodCallHandler((call) async {
       if (call.method == 'executeTask') {
-        final taskName = call.arguments as String;
-        final result = await backgroundTask(taskName);
+        //final taskName = call.arguments as String;
+        final result = await backgroundTask('42');
         return result;
       }
     });
