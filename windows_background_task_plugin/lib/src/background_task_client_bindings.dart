@@ -54,6 +54,11 @@ final class WindowsBackgroundTaskClientBindings {
     return result;
   }
 
+  int unregisterAllBackgroundTasks() {
+    int result = _unregisterAllBackgroundTasks();
+    return result;
+  }
+
   /// Uninitializes the background task client.
   void uninitialize() {
     _uninitialize();
@@ -71,6 +76,10 @@ final class WindowsBackgroundTaskClientBindings {
   late final _unregisterBackgroundTask = _nativeApi.lookupFunction<
       Uint32 Function(Pointer<Utf16>),
       int Function(Pointer<Utf16>)>('UnregisterBackgroundTask');
+
+  late final _unregisterAllBackgroundTasks =
+      _nativeApi.lookupFunction<Uint32 Function(), int Function()>(
+          'UnregisterAllBackgroundTasks');
 
   late final _uninitialize = _nativeApi
       .lookupFunction<Void Function(), void Function()>('Uninitialize');

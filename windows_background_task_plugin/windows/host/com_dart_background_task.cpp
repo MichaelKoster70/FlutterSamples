@@ -10,14 +10,14 @@
 // ----------------------------------------------------------------------------
 #include "pch.h"
 #include "com_dart_background_task.h"
-#include "winrt/Windows.ApplicationModel.ExtendedExecution.h"
 #include <iostream>
-
 
 // ----------------------------------------------------------------------------
 // Externals
 // ----------------------------------------------------------------------------
 extern flutter::DartProject g_project;
+
+extern handle g_processExitEvent;
 
 // ----------------------------------------------------------------------------
 // Class Implementation
@@ -39,7 +39,20 @@ void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInsta
 
    taskDeferral = taskInstance.GetDeferral();
 
-   taskDeferral.Complete();
+   engineHost.SetNotifyChannelInitializedHandler([this, taskName]() {
+      std::cout << "ComDartBackgroundTask::Run - Channel Initialized" << std::endl;
+      engineHost.GetChannel()->ExecuteTask(winrt::to_string(taskName));
+   });
+
+   engineHost.SetShutdownHandler([this]() {
+      std::cout << "ComDartBackgroundTask::Run - Shutdown" << std::endl;
+      taskDeferral.Complete();
+   });
+
+   engineHost.Run(taskName.c_str());
+
+   check_bool(SetEvent(g_processExitEvent.get()));
+
 }
 
 void  ComDartBackgroundTask::OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason)

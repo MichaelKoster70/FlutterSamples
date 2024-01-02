@@ -6,7 +6,6 @@
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
-            "args": ["--dart-entrypoint-args", "'arg1' 'xxx'", "arg2"]
         }
     ]
 }

@@ -55,11 +55,13 @@ void CreateAndAttachConsole()
    }
 }
 
-void ConfigureDartProject(flutter::DartProject& project)
+void ConfigureDartProject(flutter::DartProject& project, std::string entryPoint)
 {
    auto commandLineArguments = GetCommandLineArguments();
    project.set_dart_entrypoint_arguments(std::move(commandLineArguments));
+   project.set_dart_entrypoint(entryPoint);
 }
+
 
 std::vector<std::string> GetCommandLineArguments()
 {

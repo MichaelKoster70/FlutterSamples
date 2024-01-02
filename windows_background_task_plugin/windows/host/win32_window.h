@@ -60,7 +60,7 @@ public:
   /// Returns the backing Window handle to enable clients to set icon and other window properties.
   /// </summary>
   /// <returns>The Window handle,nullptr if the window has been destroyed.</returns>
-  HWND GetHandle();
+  HWND GetHandle() const;
 
   /// <summary>
   /// Configures whether closing the window will quit the application.

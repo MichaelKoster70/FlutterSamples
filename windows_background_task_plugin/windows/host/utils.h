@@ -40,7 +40,8 @@ std::string Utf8FromUtf16(const wchar_t* utf16_string);
 /// Configures the given project to use the command line arguments passed in.
 /// </summary>
 /// <param name="project">The project to be configured.</param>
-void ConfigureDartProject(flutter::DartProject& project);
+/// <param name="entryPoint">The entry point to be used for the project.</param>
+void ConfigureDartProject(flutter::DartProject& project, std::string entryPoint = std::string());
 
 /// <summary>
 /// Gets the command line arguments passed in as a std::vector<std::string>, encoded in UTF-8.

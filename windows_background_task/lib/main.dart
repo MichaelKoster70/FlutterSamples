@@ -9,25 +9,25 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:windows_background_task_plugin/windows_background_task_client.dart';
+//import 'package:windows_background_task_plugin/windows_background_task_host.dart';
 
 @pragma('vm:entry-point')
-void backgroundMain() {
-  stdout.writeln('Hello, background_main::main()!');
+void backgroundCallback() {
+  stdout.writeln('Hello, backgroundCallback()!');
+  //WindowsBackgroundTaskHost().executeTask((taskName) {});
 
   stdout.writeln('press enter to exit...');
   stdin.readLineSync();
   exit(0);
 }
 
-void main(List<String> args) async {
+void main() async {
   final client = WindowsBackgroundTaskClient();
   client.initialize("windows_background_task_example");
 
-  runApp(const MyApp());
+  client.registerComBackgroundTaskTimer('DartBackgroundTaskTimer', 15, false);
 
-  // NativeCallable<Void Function(Int64, Int64)> nativeCallable =
-  //     NativeCallable<Void Function(Int64, Int64)>(
-  //         'background_main', Pointer.fromFunction(background_main, 0, 0));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

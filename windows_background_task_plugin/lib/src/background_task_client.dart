@@ -35,6 +35,9 @@ abstract interface class WindowsBackgroundTaskClient {
   /// Unregisters the background task with the [taskName].
   void unregisterBackgroundTask(String taskName);
 
+  /// Unregisters all background tasks.
+  void unregisterAllBackgroundTasks();
+
   /// Uninitializes the background task client.
   /// This function must be called after all other functions in this library.
   /// This function will uninitialite the Windows Runtime COM infrastructure.
@@ -43,7 +46,7 @@ abstract interface class WindowsBackgroundTaskClient {
 
 /// The ClassID of the COM class implementing the background task.
 final _backgroundTaskClassid =
-    Guid.parse('88F46315-0A89-4911-9199-6BB496C14533');
+    Guid.parse('{88F46315-0A89-4911-9199-6BB496C14533}');
 
 final class _WindowsBackgroundTaskClient
     implements WindowsBackgroundTaskClient {
@@ -80,6 +83,15 @@ final class _WindowsBackgroundTaskClient
     if (hr != 0) {
       throw WindowsUniversalException(
           'Failed to unregister the Windows Background Task', hr);
+    }
+  }
+
+  @override
+  void unregisterAllBackgroundTasks() {
+    final hr = _bindings.unregisterAllBackgroundTasks();
+    if (hr != 0) {
+      throw WindowsUniversalException(
+          'Failed to unregister all Windows Background Tasks', hr);
     }
   }
 

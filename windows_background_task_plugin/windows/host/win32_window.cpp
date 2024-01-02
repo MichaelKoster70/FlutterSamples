@@ -78,7 +78,7 @@ public:
    {
       UnregisterClass(kWindowClassName, nullptr);
       _classRegistered = false;
-   };
+   }
 
 private:
    WindowClassRegistrar() = default;
@@ -107,7 +107,7 @@ bool Win32Window::Create(const std::wstring& title)
 
    const wchar_t* windowClass = WindowClassRegistrar::GetInstance()->GetWindowClass();
 
-   HWND hWindow = CreateWindow(windowClass, title.c_str(), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
+   HWND hWindow = CreateWindow(windowClass, title.c_str(), WS_OVERLAPPED | WS_DLGFRAME, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
 
    if (!hWindow)
    {
@@ -130,7 +130,6 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const hWnd, UINT const message, WPARA
       // Store the Win32Window instance pointer in the window's user data for future use.
       auto wndStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
       SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wndStruct->lpCreateParams));
-
       auto that = static_cast<Win32Window*>(wndStruct->lpCreateParams);
       that->_hWindow = hWnd;
    }
@@ -198,7 +197,7 @@ RECT Win32Window::GetClientArea()
    return frame;
 }
 
-HWND Win32Window::GetHandle()
+HWND Win32Window::GetHandle() const
 {
    return _hWindow;
 }

@@ -55,6 +55,9 @@ public:
          com_ptr<IClassFactory> taskFactory = make<TaskFactory<T>>();
          check_hresult(CoRegisterClassObject(classId, taskFactory.get(), CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE, &registrationToken));
 
+         // Wait for the signal to terminate the process
+         check_hresult(WaitForSingleObject(g_processExitEvent.get(), INFINITE));
+
          hr = S_OK;
       }
       catch (...)

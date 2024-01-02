@@ -74,6 +74,17 @@ void BackgroundTaskHelper::Unregister(hstring taskName)
    }
 }
 
+void BackgroundTaskHelper::UnregisterAll()
+{
+   // Iterate over all background tasks and unregister them.
+   auto registeredTasks = BackgroundTaskRegistration::AllTasks();
+   for (auto iter = registeredTasks.begin(); iter != registeredTasks.end(); iter++)
+   {
+      auto registration = iter.Current().Value();
+      registration.Unregister(true);
+   }
+}
+
 bool BackgroundTaskHelper::IsTaskRegistered(hstring taskName)
 {
    // Iterate over all background tasks and check if the task is already registered.

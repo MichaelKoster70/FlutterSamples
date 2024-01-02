@@ -51,6 +51,11 @@ public:
    /// <param name="taskName">The task name.</param>
    static void Unregister(hstring taskName);
 
+   /// <summary>
+   /// Unregisters all background tasks.
+   /// </summary>
+   static void UnregisterAll();
+
 private:
    /// <summary>
    /// Returns a value indicating whether the task is registered.

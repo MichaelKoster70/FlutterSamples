@@ -47,9 +47,7 @@ bool FlutterWindow::OnCreate()
    RegisterPlugins(_flutterController->engine());
 
    // Set-up a MethodChannel to handle calls from/to Flutter.
-   flutter::MethodChannel<> channel(_flutterController->engine()->messenger(), "windows.universal/background_task", &flutter::StandardMethodCodec::GetInstance());
-
-
+   _channel = std::make_shared<FlutterMethodChannel>(_flutterController->engine()->messenger(), "windows.universal/background_task");
 
    SetChildContent(_flutterController->view()->GetNativeWindow());
 

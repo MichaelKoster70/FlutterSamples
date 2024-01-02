@@ -16,6 +16,8 @@
 // Class declarations
 // ----------------------------------------------------------------------------
 
+using ShutdownHandler = std::function<void()>;
+
 /// <summary>
 /// Class proividing a host for a Flutter engine minimal Window support.
 /// </summary>
@@ -32,13 +34,36 @@ public:
   explicit FlutterEngineHost(const flutter::DartProject& project);
   virtual ~FlutterEngineHost();
 
+  static void SetMainThread(DWORD mainThreadId) { _mainThreadId = mainThreadId; }
+
+  static LRESULT ThreadMessageHandler(UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept;
+
+  /// <summary>
+  /// Sets the handler for the NotifyChannelInitialized method called by flutter.
+  /// </summary>
+  /// <param name="handler">The handler.</param>
+  void SetNotifyChannelInitializedHandler(NotifyChannelInitializedHandler handler);
+
+  /// <summary>
+  /// Sets the handler to be called when the engine shuts down.
+  /// </summary>
+  /// <param name="handler">The handler delegate</param>
+  void SetShutdownHandler(ShutdownHandler handler);
+
+  void SendRunMessage(const std::wstring& title);
+
   /// <summary>
   /// Creates a minimal view and initializes the Flutter engine.
   /// </summary>
   /// <param name="title">The title of the window.</param>
-  /// <param name="exitProcessOnEngineShutdown">Whether to exit the process when the engine shuts down.</param>
   /// <returns>true if the engine started successfully.</returns>
-  bool Run(const std::wstring& title, bool exitProcessOnEngineShutdown);
+  bool Run(const std::wstring& title);
+
+  /// <summary>
+  /// Gets the channel used to communicate with the Flutter engine.
+  /// </summary>
+  /// <returns>The channel</returns>
+  std::shared_ptr<FlutterMethodChannel> GetChannel() const { return _window.GetChannel(); }
 
   /// <summary>
   /// Stops the Flutter engine and destroys the window.
@@ -46,5 +71,9 @@ public:
   void Shutdown();
 
  private:
+   static DWORD _mainThreadId;
    FlutterWindow _window;
+   std::wstring _title;
+   NotifyChannelInitializedHandler _notifyChannelInitializedHandler;
+   ShutdownHandler _shutdownHandler;
 };

@@ -20,9 +20,17 @@
 #include "com_register_process_for_type.h"
 
 // ----------------------------------------------------------------------------
+// Constants
+// ----------------------------------------------------------------------------
+static constexpr char kBackgroundCallbackEntryPoint[] = "backgroundCallback";
+
+// ----------------------------------------------------------------------------
 // Globals
 // ----------------------------------------------------------------------------
- flutter::DartProject g_project(L"data");
+flutter::DartProject g_project(L"data");
+
+/// <summary>Manual Reset Event that gets signaled when the process should exit.</summary>
+handle g_processExitEvent{ CreateEvent(nullptr, TRUE, FALSE, nullptr) };
 
 // ----------------------------------------------------------------------------
 // App entry point
@@ -40,24 +48,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    // Initialize WinRT COM, so that it is available for use in the flutter engine and plugins.
    auto comInitializer = ComInitializer();
 
-   // Configure the Dart project
-   ConfigureDartProject(g_project);
+   // Configure the Dart project with a custom entrypoint for the background task
+   ConfigureDartProject(g_project, kBackgroundCallbackEntryPoint);
 
    // Register the COM server for the background task
    ComRegisterProcessForType<ComDartBackgroundTask> registerType;
 
    registerType.Register();
 
-   //FlutterEngineHost host(project);
-   //return host.Run(L"windows_background_task_host", false);
+   //FlutterEngineHost::SetMainThread(::GetCurrentThreadId());
 
    // run the main message loop
-   ::MSG msg;
-   while (::GetMessage(&msg, nullptr, 0, 0))
-   {
-      ::TranslateMessage(&msg);
-      ::DispatchMessage(&msg);
-   }
+   //::MSG msg;
+   //while (::GetMessage(&msg, nullptr, 0, 0))
+   //{
+   //   if (FlutterEngineHost::ThreadMessageHandler(msg.message, msg.wParam, msg.lParam) != 0)
+   //   {
+   //      ::TranslateMessage(&msg);
+   //      ::DispatchMessage(&msg);
+   //   }
+   //}
 
-   return static_cast<int>(msg.wParam);
+   //return static_cast<int>(msg.wParam);
+
+   return 0;
 }
