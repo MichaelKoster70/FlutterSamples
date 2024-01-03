@@ -40,12 +40,6 @@ public:
    /// <returns>Shared pointer holding the channel.</returns>
    std::shared_ptr<FlutterMethodChannel> GetChannel() const { return _channel; }
 
-   /// <summary>
-   /// Sets the handler to be called when the window is destroyed.
-   /// </summary>
-   /// <param name="handler">The handler</param>
-   void SetDestroyHandler(std::function<void()> handler) { _destroyHandler = handler; }
-
 protected:
    // Win32Window:
    bool OnCreate() override;
@@ -61,6 +55,4 @@ private:
 
    // The channel used to communicate with the Flutter engine.
    std::shared_ptr<FlutterMethodChannel> _channel;
-
-   std::function<void()> _destroyHandler;
 };

@@ -44,12 +44,6 @@ public:
   void SetNotifyChannelInitializedHandler(NotifyChannelInitializedHandler handler);
 
   /// <summary>
-  /// Sets the handler to be called when the engine shuts down.
-  /// </summary>
-  /// <param name="handler">The handler delegate</param>
-  void SetShutdownHandler(ShutdownHandler handler);
-
-  /// <summary>
   /// Posts a Windows message to the main platform thread.
   /// </summary>
   /// <param name="message">The message to post.</param>

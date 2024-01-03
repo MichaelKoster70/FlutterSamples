@@ -47,13 +47,6 @@ bool FlutterEngineHost::Run(const std::wstring& title)
          _window.GetChannel()->SetNotifyChannelInitializedHandler(_notifyChannelInitializedHandler);
       }
 
-      _window.SetDestroyHandler([this]() {
-         if (_shutdownHandler)
-         {
-            _shutdownHandler();
-         }
-      });
-
       // run the main message loop
       ::MSG msg;
       while (::GetMessage(&msg, nullptr, 0, 0))
@@ -72,11 +65,6 @@ bool FlutterEngineHost::Run(const std::wstring& title)
 void FlutterEngineHost::SetNotifyChannelInitializedHandler(NotifyChannelInitializedHandler handler)
 {
    _notifyChannelInitializedHandler = handler;
-}
-
-void FlutterEngineHost::SetShutdownHandler(ShutdownHandler handler)
-{
-   _shutdownHandler = handler;
 }
 
 void FlutterEngineHost::Shutdown()
