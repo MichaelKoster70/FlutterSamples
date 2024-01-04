@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package 
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:com4="http://schemas.microsoft.com/appx/manifest/com/windows10/4"
+  IgnorableNamespaces="uap uap2 uap3 rescap desktop uap10">
+  <Identity Name="WindowsBackgroundTask-Sparse" ProcessorArchitecture="x64" Publisher="CN=Michael Koster" Version="1.1.0.0" />
+  <Properties>
+    <DisplayName>windows_background_task (Sparse)</DisplayName>
+    <PublisherDisplayName>Michael Koster</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <uap10:AllowExternalContent>true</uap10:AllowExternalContent>
+  </Properties>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19000.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources"/>
+  </Capabilities>
+  <Applications>
+    <Application Id="WindowsBackgroundTask" Executable="windows_background_task.exe" uap10:TrustLevel="mediumIL" uap10:RuntimeBehavior="win32App"> 
+      <uap:VisualElements DisplayName="Windows Background Task" Description="AppDescription" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png"></uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <com4:Extension Category="windows.comServer">
+          <com4:ComServer>
+            <com4:ExeServer Executable="windows_background_task_host.exe" Arguments="-RegisterProcessAsComServer" DisplayName="Background Task Host">
+              <com4:Class Id="88F46315-0A89-4911-9199-6BB496C14533" DisplayName="Dart Background Task" />
+            </com4:ExeServer>
+          </com4:ComServer>
+        </com4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>
