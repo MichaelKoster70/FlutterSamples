@@ -38,8 +38,7 @@ ComDartBackgroundTask::ComDartBackgroundTask()
 
 void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInstance)
 {
-   DebugBreak();
-   std::cout << "ComDartBackgroundTask::Run" << std::endl;
+   std::cout << "NATIVE::ComDartBackgroundTask::Run" << std::endl;
 
    // Get the name of the task, use it as identifer on what to call in the dart code
    auto taskName = taskInstance.Task().Name();
@@ -49,7 +48,6 @@ void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInsta
    taskDeferral = taskInstance.GetDeferral();
 
    engineHost.SetNotifyChannelInitializedHandler([this, taskName]() {
-      std::cout << "ComDartBackgroundTask::Run - Channel Initialized" << std::endl;
       engineHost.PostTaskMessage(kNotifyChannelInitialized, NULL, NULL);
       });
 
@@ -60,6 +58,7 @@ void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInsta
          case kNotifyChannelInitialized:
             HandleNotifyChannelInitialized(winrt::to_string(taskName));
             return false;
+
          case kExecuteTaskCompleted:
             HandleExecuteTaskCompleted(wParam);
             return false;
@@ -69,29 +68,25 @@ void __stdcall ComDartBackgroundTask::Run(_In_ IBackgroundTaskInstance taskInsta
          }
      });
 
-   //engineHost.SetShutdownHandler([this]()
-   //   {
-   //      std::cout << "ComDartBackgroundTask::Run - Shutdown" << std::endl;
-
-   //   });
-
    engineHost.Run(taskName.c_str());
 
    // mark the task as completed
    taskDeferral.Complete();
 
+   // signal the process exit event
    check_bool(SetEvent(g_processExitEvent.get()));
 }
 
 void  ComDartBackgroundTask::OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason)
 {
-   std::cout << "ComDartBackgroundTask::OnCanceled" << std::endl;
+   std::cout << "NATIVE::ComDartBackgroundTask::OnCanceled" << std::endl;
+   engineHost.Shutdown();
    isCanceled = true;
 }
 
 void ComDartBackgroundTask::HandleNotifyChannelInitialized(const std::string& taskName)
 {
-   std::cout << "ComDartBackgroundTask::HandleNotifyChannelInitialized()" << std::endl;
+   std::cout << "NATIVE::ComDartBackgroundTask::HandleNotifyChannelInitialized()" << std::endl;
    engineHost.GetChannel()->ExecuteTask(taskName, [this](bool result)
       {
          engineHost.PostTaskMessage(kExecuteTaskCompleted, result, NULL);
@@ -100,6 +95,6 @@ void ComDartBackgroundTask::HandleNotifyChannelInitialized(const std::string& ta
 
 void ComDartBackgroundTask::HandleExecuteTaskCompleted(bool result)
 {
-   std::cout << "ComDartBackgroundTask::HandleExecuteTaskCompleted()" << std::endl;
+   std::cout << "NATIVE::ComDartBackgroundTask::HandleExecuteTaskCompleted()" << std::endl;
    engineHost.Shutdown();
 }

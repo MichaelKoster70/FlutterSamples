@@ -13,15 +13,12 @@ import 'package:windows_background_task_plugin/windows_background_task_host.dart
 
 @pragma('vm:entry-point')
 void backgroundCallback() {
-  stdout.writeln('Hello, backgroundCallback()!');
+  stdout.writeln('DART:: Hello, backgroundCallback()!');
   WindowsBackgroundTaskHost().executeTask((taskName) async {
-    stdout.writeln('Hello, executeTask($taskName)!');
+    stdout.writeln('DART:: Hello, executeTask($taskName)!');
     return true;
   });
-
-  stdout.writeln('press enter to exit...');
-  // stdin.readLineSync();
-  // exit(0);
+  stdout.writeln('DART:: Goodby, backgroundCallback()!');
 }
 
 void main() async {

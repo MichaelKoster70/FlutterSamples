@@ -33,8 +33,8 @@ class _WindowsBackgroundTaskHost implements WindowsBackgroundTaskHost {
     // Setup the method channel
     _backgroundChannel.setMethodCallHandler((call) async {
       if (call.method == 'executeTask') {
-        //final taskName = call.arguments as String;
-        final result = await backgroundTask('42');
+        final taskName = call.arguments as String;
+        final result = await backgroundTask(taskName);
         return result;
       }
     });

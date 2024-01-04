@@ -141,7 +141,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const hWnd, UINT const message, WPARA
    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-LRESULT Win32Window::MessageHandler(HWND hwnd, UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept
+LRESULT Win32Window::MessageHandler(HWND hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
 {
    switch (message)
    {
@@ -155,7 +155,7 @@ LRESULT Win32Window::MessageHandler(HWND hwnd, UINT const message, WPARAM const 
       return 0;
    }
 
-   return DefWindowProc(_hWindow, message, wparam, lparam);
+   return DefWindowProc(_hWindow, message, wParam, lParam);
 }
 
 void Win32Window::Destroy()
@@ -182,12 +182,7 @@ Win32Window* Win32Window::GetThisFromHandle(HWND const hWnd) noexcept
 void Win32Window::SetChildContent(HWND hContentWindow)
 {
    _hContentWindow = hContentWindow;
-   SetParent(_hContentWindow, _hWindow);
-   RECT frame = GetClientArea();
-
-   MoveWindow(hContentWindow, frame.left, frame.top, frame.right - frame.left, frame.bottom - frame.top, true);
-
-   SetFocus(_hContentWindow);
+   SetParent(hContentWindow, _hWindow);
 }
 
 RECT Win32Window::GetClientArea()
