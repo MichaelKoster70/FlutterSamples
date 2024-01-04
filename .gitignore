@@ -27,3 +27,4 @@ doc/api/
 .flutter-plugins-dependencies
 /.vs
 /windows_console/windows/runner/.vs
+/windows_background_task_plugin/windows/host/host.aps

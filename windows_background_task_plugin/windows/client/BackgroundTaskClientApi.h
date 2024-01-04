@@ -117,6 +117,13 @@ HRESULT UnregisterBackgroundTask
 );
 
 /// <summary>
+/// Unregisters all background tasks.
+/// </summary>
+/// <returns>The result code, 0 for success</returns>
+BACKGROUND_TASK_CLIENT_API
+HRESULT UnregisterAllBackgroundTasks();
+
+/// <summary>
 /// Uninitializes the background task client.
 /// </summary>
 /// <remarks>

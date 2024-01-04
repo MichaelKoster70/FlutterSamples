@@ -6,8 +6,8 @@
 # ----------------------------------------------------------------------------
 
 name: windows_background_task_plugin
-description: "A Flutter FFI for COM based Windpws UWP based background tasks."
-version: 0.0.1
+description: "A Flutter FFI for COM and UWP based background tasks."
+version: 0.2.0
 homepage:
 
 environment:
