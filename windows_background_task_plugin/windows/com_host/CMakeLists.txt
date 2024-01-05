@@ -12,7 +12,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Project-level configuration.
-set(PROJECT_NAME "windows_background_task_host")
+set(PROJECT_NAME "windows_background_task_com_host")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 add_executable(${PROJECT_NAME} WIN32 
@@ -56,5 +56,5 @@ add_dependencies(${PROJECT_NAME} flutter)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-  OUTPUT_NAME ${PROJECT_NAME}
+  OUTPUT_NAME "windows_background_task_host"
 )
