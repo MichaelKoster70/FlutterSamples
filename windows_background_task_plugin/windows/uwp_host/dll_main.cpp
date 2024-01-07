@@ -8,16 +8,10 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
+#include "pch.h"
 #include <flutter/dart_project.h>
-#include <windows.h>
-#include <unknwn.h>
-#include "winrt/Windows.Foundation.h"
-#include "winrt/Windows.ApplicationModel.Background.h"
 #include "flutter_engine_host.h"
 #include "utils.h"
-#include "com_initializer.h"
-#include "com_dart_background_task.h"
-#include "com_register_process_for_type.h"
 
 // ----------------------------------------------------------------------------
 // Constants
@@ -29,32 +23,23 @@ static constexpr char kBackgroundCallbackEntryPoint[] = "backgroundCallback";
 // ----------------------------------------------------------------------------
 flutter::DartProject g_project(L"data");
 
-/// <summary>Manual Reset Event that gets signaled when the process should exit.</summary>
-handle g_processExitEvent{ CreateEvent(nullptr, TRUE, FALSE, nullptr) };
-
 // ----------------------------------------------------------------------------
 // App entry point
 // ----------------------------------------------------------------------------
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine, _In_ int nCmdShow)
+
+// Add a DllMain so that the COM server is initialized when the DLL is loaded
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
-   UNREFERENCED_PARAMETER(hInstance);
-   UNREFERENCED_PARAMETER(hPrevInstance);
-   UNREFERENCED_PARAMETER(pCmdLine);
-   UNREFERENCED_PARAMETER(nCmdShow);
+   UNREFERENCED_PARAMETER(hModule);
+   UNREFERENCED_PARAMETER(lpReserved);
 
-   // Create a console for the process
-   CreateAndAttachConsoleIfNeeded();
-
-   // Initialize WinRT COM, so that it is available for use in the flutter engine and plugins.
-   auto comInitializer = ComInitializer();
-
-   // Configure the Dart project with a custom entrypoint for the background task
    ConfigureDartProject(g_project, kBackgroundCallbackEntryPoint);
 
-   // Register the COM server for the background task
-   ComRegisterProcessForType<ComDartBackgroundTask> registerType;
+   switch (fdwReason)
+   {
+   default:
+      break;
+   }
 
-   registerType.Register();
-
-   return 0;
+   return TRUE;
 }

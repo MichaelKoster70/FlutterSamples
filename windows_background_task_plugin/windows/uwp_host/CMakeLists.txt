@@ -21,25 +21,29 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME} SHARED 
   "flutter_engine_host.cpp"
+  "flutter_engine_host.h"
   "flutter_window.cpp"
+  "flutter_window.h"
   "flutter_method_channel.cpp"
+  "flutter_method_channel.h"
   "win32_window.cpp"
+  "win32_window.h"
   "utils.cpp"
+  "utils.h"
+  "dll_main.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "host.rc"
   "host.manifest"
   "dart_background_task.idl"
+  "dart_background_task.cpp"
+  "dart_background_task.h"
   "uwp_host.def"
+  "${CMAKE_CURRENT_BINARY_DIR}/Generated Files/module.g.cpp"
 )
 
-# override the faulty <Midl> property in the generated VS project
-set_property(SOURCE "dart_background_task.idl" PROPERTY VS_SETTINGS "OutputDirectory= ")
-
-# make sure the WinRT hgeaders are generated before building this project
-add_dependencies(${PROJECT_NAME} "winrt_header_generator")
-
-# add the generated WinRT headers to the include path
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/include)
+# Model the IDL to implementation file dependency in the generated VS project
+set_source_files_properties(dart_background_task.cpp PROPERTIES VS_SETTINGS "DependentUpon=${CMAKE_CURRENT_SOURCE_DIR}/dart_background_task.idl")
+set_source_files_properties(dart_background_task.h PROPERTIES VS_SETTINGS "DependentUpon=${CMAKE_CURRENT_SOURCE_DIR}/dart_background_task.idl")
 
 # Apply the standard set of build settings.
 #apply_standard_settings(${PROJECT_NAME})
@@ -73,6 +77,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   VS_GLOBAL_ROOTNAMESPACE BackgroundTaskHost
   )
 
+  # Add the C++/WinRT NuGet package to the generated VS project
 set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY VS_USER_PROPS
   ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}/build/native/Microsoft.Windows.CppWinRT.props
 )
@@ -80,6 +85,12 @@ set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY VS_USER_PROPS
 target_link_libraries(${PROJECT_NAME} PRIVATE 
   ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}/build/native/Microsoft.Windows.CppWinRT.targets
 )
+
+# override the faulty <Midl> property in the generated VS project
+set_property(SOURCE "dart_background_task.idl" PROPERTY VS_SETTINGS "OutputDirectory= ")
+
+# enable full Desktop Win32 API access
+target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.17134.0
