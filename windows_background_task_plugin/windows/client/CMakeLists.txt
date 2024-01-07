@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME} SHARED
   "BackgroundTaskWithTimeTriggerApis.cpp"
   "BackgroundTaskHelper.cpp"
   "Globals.cpp"
+  "version.rc"
 )
 
 # make sure the WinRT hgeaders are generated before building this project

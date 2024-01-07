@@ -45,17 +45,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_APP_ICON            ICON                    "host.ico"
-
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -90,11 +79,11 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Michael Koster"
-            VALUE "FileDescription", "Windows COM Background Task Host"
+            VALUE "FileDescription", "Windows Background Task Host"
             VALUE "FileVersion", VERSION_AS_STRING
             VALUE "InternalName", "windows_background_task_host"
             VALUE "LegalCopyright", "Copyright (C) 2024 Michael Koster. All rights reserved."
-            VALUE "OriginalFilename", "windows_background_task_host.exe"
+            VALUE "OriginalFilename", "windows_background_task_host.dll"
             VALUE "ProductName", "Windows Background Task Sample"
             VALUE "ProductVersion", VERSION_AS_STRING
         END
