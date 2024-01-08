@@ -1,6 +1,6 @@
 # windows_background_task_plugin
 
-A new Flutter FFI plugin project.
+A FFI based plugin for hosting Windows Universal based Background Tasks hosting a Flutter application.
 
 ## Getting Started
 
