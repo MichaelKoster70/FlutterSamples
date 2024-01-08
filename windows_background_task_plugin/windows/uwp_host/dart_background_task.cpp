@@ -32,8 +32,17 @@ namespace winrt::BackgroundTaskHost::implementation
       //EMPTY_BODY
    }
 
-   void DartBackgroundTask::Run(winrt::Windows::ApplicationModel::Background::IBackgroundTaskInstance const& taskInstance)
+   void DartBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance)
    {
-      throw hresult_not_implemented();
+      std::cout << "NATIVE::ComDartBackgroundTask::Run" << std::endl;
+
+      // Get the name of the task, use it as identifer on what to call in the dart code
+      auto taskName = taskInstance.Task().Name();
+
+      taskInstance.Canceled({ this, &DartBackgroundTask::OnCanceled });
+   }
+
+   void __stdcall DartBackgroundTask::OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
+   {
    }
 }

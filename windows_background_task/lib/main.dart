@@ -7,6 +7,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_background_task_plugin/windows_background_task_client.dart';
 import 'package:windows_background_task_plugin/windows_background_task_host.dart';
@@ -23,11 +24,6 @@ void backgroundCallback() {
 }
 
 void main() async {
-  final client = WindowsBackgroundTaskClient();
-  client.initialize("windows_background_task_example");
-
-  // client.registerComBackgroundTaskTimer('DartBackgroundTaskTimer', 15, false);
-
   runApp(const MyApp());
 }
 
@@ -103,6 +99,33 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _registerUwpBasedTask() {
+    try {
+      _client.registerUwpBackgroundTaskTimer(
+          'DartUwpBackgroundTask', 15, false);
+      setState(() {
+        _statusText = 'UWP Component Based Task registered';
+      });
+    } on WindowsUniversalException catch (e) {
+      setState(() {
+        _statusText = e.message;
+      });
+    }
+  }
+
+  void _unregisteruwpBasedTask() {
+    try {
+      _client.unregisterBackgroundTask('DartUwpBackgroundTask');
+      setState(() {
+        _statusText = 'COM Based Task unregistered';
+      });
+    } on WindowsUniversalException catch (e) {
+      setState(() {
+        _statusText = e.message;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,12 +166,12 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 RawMaterialButton(
-                  onPressed: _registerComBasedTask,
+                  onPressed: _registerUwpBasedTask,
                   child: const Text('Register UWP Component Based Task'),
                 ),
                 const SizedBox(width: 10),
                 RawMaterialButton(
-                  onPressed: _unregisterComBasedTask,
+                  onPressed: _unregisteruwpBasedTask,
                   child: const Text('Unregister UWP Component Based Task'),
                 ),
               ],

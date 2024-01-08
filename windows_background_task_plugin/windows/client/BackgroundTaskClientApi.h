@@ -106,6 +106,25 @@ HRESULT RegisterComBackgroundTaskTimer
 );
 
 /// <summary>
+/// Registers a one shot timer triggered background task with optional conditions.
+/// </summary>
+/// <param name="taskEntryPoint">The UWP comonent entrypoint of the background task.</param>
+/// <param name="taskName">The name of the task.</param>
+/// <param name="freshnessTime">The freshness time in minutes (minimum 15).</param>
+/// <param name="oneShot">TRUE if the time event trigger will be used once; FALSE if it will be used each time freshnessTime elapses.</param>
+/// <param name="conditionType">The optional condition type array.</param>
+/// <returns>The result code, 0 for success</returns>
+BACKGROUND_TASK_CLIENT_API
+HRESULT RegisterUwpBackgroundTaskTimer
+(
+   _In_ LPCWSTR taskEntryPoint,
+   _In_ LPCWSTR taskName,
+   _In_ UINT32 freshnessTime,
+   _In_ BOOL oneShot,
+   _In_ ConditionType conditionType[]
+);
+
+/// <summary>
 /// Unregisters a background task.
 /// </summary>
 /// <param name="taskName">The name of the task.</param>

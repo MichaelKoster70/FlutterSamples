@@ -74,6 +74,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   VS_GLOBAL_ApplicationType "Windows Store"
   VS_GLOBAL_ApplicationTypeRevision "10.0"
   VS_GLOBAL_AppContainerApplication "true"
+  VS_GLOBAL_DefaultLanguage "en-US"
   VS_GLOBAL_ROOTNAMESPACE BackgroundTaskHost
   )
 
@@ -89,7 +90,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 # override the faulty <Midl> property in the generated VS project
 set_property(SOURCE "dart_background_task.idl" PROPERTY VS_SETTINGS "OutputDirectory= ")
 
-# enable full Desktop Win32 API access
+# enable full Desktop Win32 API access - this will violate store 
 target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

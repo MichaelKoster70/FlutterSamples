@@ -16,9 +16,11 @@ set(PROJECT_NAME "windows_background_task_client")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 add_library(${PROJECT_NAME} SHARED
+  "BackgroundTaskClientApi.h"
   "InitializationApis.cpp"
   "BackgroundTaskWithTimeTriggerApis.cpp"
   "BackgroundTaskHelper.cpp"
+  "BackgroundTaskHelper.h"
   "Globals.cpp"
   "version.rc"
 )

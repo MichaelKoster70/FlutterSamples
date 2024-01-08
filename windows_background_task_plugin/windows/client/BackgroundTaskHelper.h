@@ -30,7 +30,7 @@ public:
    /// Registers a COM based background task returning the background task registration.
    /// </summary>
    /// <param name="taskName">The task name.</param>
-   /// <param name="classId">The COM class ID imnplementing the task.</param>
+   /// <param name="classId">The COM class ID implementing the task.</param>
    /// <param name="trigger">The task trigger to use.</param>
    /// <param name="conditions">The optional task conditions to use.</param>
    /// <returns>The background task registration instance.</returns>
@@ -40,10 +40,19 @@ public:
    /// Registers a COM based background task.
    /// </summary>
    /// <param name="taskName">The task name.</param>
-   /// <param name="classId">The COM class ID imnplementing the task.</param>
+   /// <param name="classId">The COM class ID implementing the task.</param>
    /// <param name="trigger">The task trigger to use.</param>
    /// <param name="conditions">The optional task conditions to use.</param>
    static void Register(hstring taskName, guid classId, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions);
+
+   /// <summary>
+   /// Registers a UWP component based background task.
+   /// </summary>
+   /// <param name="taskName">The task name.</param>
+   /// <param name="taskEntryPoint">The UWP comonent entrypoint implementing the task.</param>
+   /// <param name="trigger">The task trigger to use.</param>
+   /// <param name="conditions">The optional task conditions to use.</param>
+   static void Register(hstring taskName, hstring taskEntryPoint, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions);
 
    /// <summary>
    /// Unregisters a background task.
