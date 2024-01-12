@@ -7,7 +7,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_background_task_plugin/windows_background_task_client.dart';
 import 'package:windows_background_task_plugin/windows_background_task_host.dart';

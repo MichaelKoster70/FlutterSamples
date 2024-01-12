@@ -34,6 +34,7 @@ static bool g_backgroundAccessRequested = false;
 // Forward declarations
 // ----------------------------------------------------------------------------
 void RegisterComTaskTimer(_In_ GUID* taskClassId, _In_ LPCWSTR taskName, _In_ UINT32 freshnessTime, _In_ BOOL oneShot, _In_ ConditionType conditionType[]);
+void RegisterUwpTaskTimer(_In_ LPCWSTR taskEntryPoint, _In_ LPCWSTR taskName, _In_ UINT32 freshnessTime, _In_ BOOL oneShot, _In_ ConditionType conditionType[]);
 void RequestBackgroundAccess();
 void RemoveBackgroundAccess();
 
@@ -85,7 +86,7 @@ HRESULT RegisterUwpBackgroundTaskTimer
       }
 
       RequestBackgroundAccess();
-      RegisterComTaskTimer(taskClassId, taskName, freshnessTime, oneShot, conditionType);
+      RegisterUwpTaskTimer(taskEntryPoint, taskName, freshnessTime, oneShot, conditionType);
 
       return S_OK;
    }
@@ -177,7 +178,7 @@ void RegisterComTaskTimer
    BackgroundTaskHelper::Register(taskName, classId, trigger, conditions);
 }
 
-void RegisteruwpTaskTimer
+void RegisterUwpTaskTimer
 (
    _In_ LPCWSTR taskEntryPoint,
    _In_ LPCWSTR taskName,

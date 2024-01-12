@@ -16,7 +16,6 @@
 // Externals
 // ----------------------------------------------------------------------------
 extern flutter::DartProject g_project;
-
 extern handle g_processExitEvent;
 
 // ----------------------------------------------------------------------------
@@ -25,6 +24,8 @@ extern handle g_processExitEvent;
 
 // Message sent to the main thread to notify that the channel is initialized.
 const UINT kNotifyChannelInitialized = WM_USER + 2;
+
+// Message sent to the main thread to notify that the task is completed.
 const UINT kExecuteTaskCompleted = WM_USER + 3;
 
 // ----------------------------------------------------------------------------

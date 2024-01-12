@@ -9,6 +9,7 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "flutter_engine_host.h"
+#include "debug_log.h"
 #include <optional>
 #include "flutter/generated_plugin_registrant.h"
 
@@ -51,6 +52,7 @@ bool FlutterEngineHost::Run(const std::wstring& title)
       ::MSG msg;
       while (::GetMessage(&msg, nullptr, 0, 0))
       {
+         DebugLog("GetMessage { }", msg.message);
          if (HandleThreadMessage(msg.message, msg.wParam, msg.lParam))
          {
             ::TranslateMessage(&msg);
@@ -58,7 +60,8 @@ bool FlutterEngineHost::Run(const std::wstring& title)
          }
       }
    }
-
+   
+   DebugLog("FlutterEngineHost::Run returns { }", success);
    return success;
 }
 

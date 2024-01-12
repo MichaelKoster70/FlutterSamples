@@ -8,11 +8,11 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include <winrt/Windows.Foundation.h>
-#include <windows.h>
 #include "win32_window.h"
+
+#include <dwmapi.h>
+#include <flutter_windows.h>
 #include "resource.h"
-#include "debug_log.h"
 
 // ----------------------------------------------------------------------------
 // Constants
@@ -55,18 +55,18 @@ public:
    {
       if (!_classRegistered)
       {
-         WNDCLASS windowClass{};
-         windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
-         windowClass.lpszClassName = kWindowClassName;
-         windowClass.style = CS_HREDRAW | CS_VREDRAW;
-         windowClass.cbClsExtra = 0;
-         windowClass.cbWndExtra = 0;
-         windowClass.hInstance = GetModuleHandle(nullptr);
-         windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
-         windowClass.hbrBackground = 0;
-         windowClass.lpszMenuName = nullptr;
-         windowClass.lpfnWndProc = Win32Window::WndProc;
-         RegisterClass(&windowClass);
+         WNDCLASS window_class{};
+         window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
+         window_class.lpszClassName = kWindowClassName;
+         window_class.style = CS_HREDRAW | CS_VREDRAW;
+         window_class.cbClsExtra = 0;
+         window_class.cbWndExtra = 0;
+         window_class.hInstance = GetModuleHandle(nullptr);
+         window_class.hIcon = LoadIcon(window_class.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
+         window_class.hbrBackground = 0;
+         window_class.lpszMenuName = nullptr;
+         window_class.lpfnWndProc = Win32Window::WndProc;
+         RegisterClass(&window_class);
          _classRegistered = true;
       }
 
@@ -80,7 +80,7 @@ public:
    {
       UnregisterClass(kWindowClassName, nullptr);
       _classRegistered = false;
-   }
+   };
 
 private:
    WindowClassRegistrar() = default;
@@ -108,12 +108,9 @@ bool Win32Window::Create(const std::wstring& title)
    Destroy();
 
    const wchar_t* windowClass = WindowClassRegistrar::GetInstance()->GetWindowClass();
-   DebugLog("Win32Window::Create - CreateWindow");
 
-   HWND hWindow = CreateWindow(windowClass, title.c_str(), WS_OVERLAPPED | WS_DLGFRAME, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
+   HWND hWindow = CreateWindow(windowClass, title.c_str(), WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
 
-   int64_t wnd = (int64_t)hWindow;
-   DebugLog("Win32Window::Create - CreateWindow returned { }", wnd);
    if (!hWindow)
    {
       return false;
@@ -135,6 +132,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const hWnd, UINT const message, WPARA
       // Store the Win32Window instance pointer in the window's user data for future use.
       auto wndStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
       SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wndStruct->lpCreateParams));
+
       auto that = static_cast<Win32Window*>(wndStruct->lpCreateParams);
       that->_hWindow = hWnd;
    }
@@ -146,7 +144,7 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const hWnd, UINT const message, WPARA
    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-LRESULT Win32Window::MessageHandler(HWND hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
+LRESULT Win32Window::MessageHandler(HWND hwnd, UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept
 {
    switch (message)
    {
@@ -160,7 +158,7 @@ LRESULT Win32Window::MessageHandler(HWND hWnd, UINT const message, WPARAM const 
       return 0;
    }
 
-   return DefWindowProc(_hWindow, message, wParam, lParam);
+   return DefWindowProc(_hWindow, message, wparam, lparam);
 }
 
 void Win32Window::Destroy()
@@ -179,15 +177,20 @@ void Win32Window::Destroy()
    }
 }
 
-Win32Window* Win32Window::GetThisFromHandle(HWND const hWnd) noexcept
+Win32Window* Win32Window::GetThisFromHandle(HWND const window) noexcept
 {
-   return reinterpret_cast<Win32Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+   return reinterpret_cast<Win32Window*>(GetWindowLongPtr(window, GWLP_USERDATA));
 }
 
 void Win32Window::SetChildContent(HWND hContentWindow)
 {
    _hContentWindow = hContentWindow;
-   SetParent(hContentWindow, _hWindow);
+   SetParent(_hContentWindow, _hWindow);
+   RECT frame = GetClientArea();
+
+   MoveWindow(hContentWindow, frame.left, frame.top, frame.right - frame.left, frame.bottom - frame.top, true);
+
+   SetFocus(_hContentWindow);
 }
 
 RECT Win32Window::GetClientArea()
@@ -197,7 +200,7 @@ RECT Win32Window::GetClientArea()
    return frame;
 }
 
-HWND Win32Window::GetHandle() const
+HWND Win32Window::GetHandle()
 {
    return _hWindow;
 }
@@ -205,15 +208,4 @@ HWND Win32Window::GetHandle() const
 void Win32Window::SetQuitOnClose(bool quitOnClose)
 {
    _quitOnClose = quitOnClose;
-}
-
-bool Win32Window::OnCreate()
-{
-   //EMPY_BODY - override in subclass
-   return true;
-}
-
-void Win32Window::OnDestroy()
-{
-   //EMPY_BODY - override in subclass
 }

@@ -19,6 +19,17 @@ set(PROJECT_NAME "windows_background_task_uwp_host")
 set(CPPWINRT_VERSION "2.0.230706.1")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/Directory.Build.props"
+  "${CMAKE_CURRENT_BINARY_DIR}/Directory.Build.props"
+  COPYONLY
+)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/Directory.Build.targets"
+  "${CMAKE_CURRENT_BINARY_DIR}/Directory.Build.targets"
+  COPYONLY
+)
+
 add_library(${PROJECT_NAME} SHARED 
   "flutter_engine_host.cpp"
   "flutter_engine_host.h"
@@ -33,10 +44,10 @@ add_library(${PROJECT_NAME} SHARED
   "dll_main.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "host.rc"
-  "host.manifest"
   "dart_background_task.idl"
   "dart_background_task.cpp"
   "dart_background_task.h"
+  "debug_log.h"
   "uwp_host.def"
   "${CMAKE_CURRENT_BINARY_DIR}/Generated Files/module.g.cpp"
 )
@@ -44,9 +55,6 @@ add_library(${PROJECT_NAME} SHARED
 # Model the IDL to implementation file dependency in the generated VS project
 set_source_files_properties(dart_background_task.cpp PROPERTIES VS_SETTINGS "DependentUpon=${CMAKE_CURRENT_SOURCE_DIR}/dart_background_task.idl")
 set_source_files_properties(dart_background_task.h PROPERTIES VS_SETTINGS "DependentUpon=${CMAKE_CURRENT_SOURCE_DIR}/dart_background_task.idl")
-
-# Apply the standard set of build settings.
-#apply_standard_settings(${PROJECT_NAME})
 
 # Add preprocessor definitions for the build version.
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")
@@ -61,8 +69,25 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 add_dependencies(${PROJECT_NAME} flutter)
 
-# Set the C++ standard to C++ 17
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+# Set C++ Compiler options
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+
+target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /wd"4100" /wd"4447")
+target_compile_options(${PROJECT_NAME} PRIVATE /EHsc)
+target_compile_definitions(${PROJECT_NAME} PRIVATE "_HAS_EXCEPTIONS=0")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+
+# set linker options
+target_link_options(${PROJECT_NAME} PRIVATE /MANIFEST:NO)
+
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Debug>:/OPT:NOICF>")
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Debug>:/OPT:NOREF>")
+
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Profile>:/OPT:ICF>")
+target_link_options(${PROJECT_NAME} PRIVATE "$<$<CONFIG:Profile>:/OPT:REF>")
 
 # Set the C++/WinRT language option in the generated VS project
 set_target_properties(${PROJECT_NAME} PROPERTIES 
@@ -91,7 +116,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 set_property(SOURCE "dart_background_task.idl" PROPERTY VS_SETTINGS "OutputDirectory= ")
 
 # enable full Desktop Win32 API access - this will violate store 
-target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP)
+#target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.17134.0

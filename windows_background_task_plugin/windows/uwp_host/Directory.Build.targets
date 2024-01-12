@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+  <WindowsAppContainer>false</WindowsAppContainer>
+  </PropertyGroup>
+</Project>

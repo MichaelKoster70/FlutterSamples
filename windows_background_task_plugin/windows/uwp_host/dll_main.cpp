@@ -31,15 +31,10 @@ flutter::DartProject g_project(L"data");
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
    UNREFERENCED_PARAMETER(hModule);
+   UNREFERENCED_PARAMETER(fdwReason);
    UNREFERENCED_PARAMETER(lpReserved);
 
    ConfigureDartProject(g_project, kBackgroundCallbackEntryPoint);
-
-   switch (fdwReason)
-   {
-   default:
-      break;
-   }
 
    return TRUE;
 }

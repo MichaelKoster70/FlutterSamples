@@ -44,7 +44,26 @@ namespace winrt::BackgroundTaskHost::implementation
       /// <param name="sender">The background task instance that was cancelled.</param>
       /// <param name="reason">The reason the background task instance was cancelled.</param>
       void __stdcall OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason);
+
    private:
+
+      /// <summary>
+      /// Handles the notification that the channel is initialized.
+      /// </summary>
+      /// <param name="taskName">The name of the DART task </param>
+      void HandleNotifyChannelInitialized(const std::string& taskName);
+
+      /// <summary>
+      /// Handles the notification that the task is completed.
+      /// </summary>
+      /// <param name="result">The result of the task.</param>
+      void HandleExecuteTaskCompleted(bool result);
+
+      /// <summary>
+      /// Debug helper to show a toast message
+      /// </summary>
+      /// <param name="message">The message to show</param>
+      void DebugShowToast(hstring const& message);
 
       FlutterEngineHost engineHost;
       BackgroundTaskDeferral taskDeferral = nullptr;
