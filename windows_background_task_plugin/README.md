@@ -29,4 +29,3 @@ The `pubspec.yaml` specifies FFI plugins as follows:
 The native build systems that are invoked by FFI (and method channel) plugins are:
 * For Windows: CMake.
   * See the documentation in windows/CMakeLists.txt.
-
