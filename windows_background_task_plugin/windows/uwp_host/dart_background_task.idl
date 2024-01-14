@@ -1,0 +1,8 @@
+namespace BackgroundTaskHost
+{
+    [default_interface]
+    runtimeclass DartBackgroundTask : Windows.ApplicationModel.Background.IBackgroundTask
+    {
+        DartBackgroundTask();
+    }
+}

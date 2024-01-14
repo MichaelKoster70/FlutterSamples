@@ -13,14 +13,13 @@
 #include "com_task_factory.h"
 
 // ----------------------------------------------------------------------------
-// Usings
+// Externals
 // ----------------------------------------------------------------------------
-using namespace winrt;
+extern winrt::handle g_processExitEvent;
 
 // ----------------------------------------------------------------------------
 // Declarations
 // ----------------------------------------------------------------------------
-
 /// <summary>
 /// Utility class responsible for registering the process for COM activation.
 /// </summary>
@@ -71,4 +70,3 @@ public:
 private:
    DWORD registrationToken = 0;
 };
-

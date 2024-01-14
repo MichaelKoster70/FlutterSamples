@@ -44,6 +44,20 @@ final class WindowsBackgroundTaskClientBindings {
     return result;
   }
 
+  int registerUwpBackgroundTaskTimer(
+      String taskEntryPoint, String taskName, int freshnessTime, bool oneShot) {
+    int result = 0;
+    using((Arena arena) {
+      final Pointer<Utf16> nativeTaskEntryPoint =
+          taskEntryPoint.toNativeUtf16(allocator: arena);
+      final Pointer<Utf16> nativeTaskName =
+          taskName.toNativeUtf16(allocator: arena);
+      result = _registerUwpBackgroundTaskTimer(nativeTaskEntryPoint,
+          nativeTaskName, freshnessTime, oneShot ? TRUE : FALSE);
+    });
+    return result;
+  }
+
   int unregisterBackgroundTask(String taskName) {
     int result = 0;
     using((Arena arena) {
@@ -72,6 +86,11 @@ final class WindowsBackgroundTaskClientBindings {
       Uint32 Function(Pointer<GUID>, Pointer<Utf16>, Uint32, Uint32),
       int Function(Pointer<GUID>, Pointer<Utf16>, int,
           int)>('RegisterComBackgroundTaskTimer');
+
+  late final _registerUwpBackgroundTaskTimer = _nativeApi.lookupFunction<
+      Uint32 Function(Pointer<Utf16>, Pointer<Utf16>, Uint32, Uint32),
+      int Function(Pointer<Utf16>, Pointer<Utf16>, int,
+          int)>('RegisterUwpBackgroundTaskTimer');
 
   late final _unregisterBackgroundTask = _nativeApi.lookupFunction<
       Uint32 Function(Pointer<Utf16>),

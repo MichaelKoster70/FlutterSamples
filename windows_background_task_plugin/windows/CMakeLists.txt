@@ -10,7 +10,9 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 
 # Invoke the build for native code shared with the other target platforms.
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/winrt")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/host")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/com_host")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/uwp_host")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/uwp_runner")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/client")
 
 # List of absolute paths to libraries that should be bundled with the plugin.
@@ -18,12 +20,8 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/client")
 # external build triggered from this build file.
 set(windows_background_task_plugin_bundled_libraries
 $<TARGET_FILE:windows_background_task_client>
-$<TARGET_FILE:windows_background_task_host>
+$<TARGET_FILE:windows_background_task_com_host>
+$<TARGET_FILE:windows_background_task_uwp_host>
+$<TARGET_FILE:windows_background_task_uwp_runner>
  PARENT_SCOPE
 )
-
-
-
-
-
-

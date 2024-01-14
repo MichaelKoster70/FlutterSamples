@@ -8,7 +8,7 @@
 # ----------------------------------------------------------------------------
 
 # Use the tools from the Windows 11 SDK
-$windowsSdk = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22000.0\x64"
+$windowsSdk = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22621.0\x64"
 $makepri = Join-Path $windowsSdk -ChildPath "makepri.exe" 
 $makeAppx = Join-Path $windowsSdk -ChildPath "MakeAppx.exe"
 $signTool = Join-Path $windowsSdk -ChildPath "SignTool.exe"

@@ -24,12 +24,20 @@ abstract interface class WindowsBackgroundTaskClient {
   /// Throws an [WindowsUniversalException] if the initialization fails.
   void initialize(String applicationId);
 
-  /// Registers a timer tigger based background task with the [taskName] and [freshnessTime] in minutes.
+  /// Registers a timer tigger based background task (COM based) with the [taskName] and [freshnessTime] in minutes.
   /// If [oneShot] is true, the background task will only be triggered once.
   /// The [freshnessTime] must be between 15 minutes and 30 days.
   ///
   /// Throws an [WindowsUniversalException] if the registration fails.
   void registerComBackgroundTaskTimer(
+      String taskName, int freshnessTime, bool oneShot);
+
+  /// Registers a timer tigger based background task with the [taskName] and [freshnessTime] in minutes.
+  /// If [oneShot] is true, the background task will only be triggered once.
+  /// The [freshnessTime] must be between 15 minutes and 30 days.
+  ///
+  /// Throws an [WindowsUniversalException] if the registration fails.
+  void registerUwpBackgroundTaskTimer(
       String taskName, int freshnessTime, bool oneShot);
 
   /// Unregisters the background task with the [taskName].
@@ -47,6 +55,9 @@ abstract interface class WindowsBackgroundTaskClient {
 /// The ClassID of the COM class implementing the background task.
 final _backgroundTaskClassid =
     Guid.parse('{88F46315-0A89-4911-9199-6BB496C14533}');
+
+// The entry point of the UWP background task.
+const _backgroundTaskEntryPoint = 'BackgroundTaskHost.DartBackgroundTask';
 
 final class _WindowsBackgroundTaskClient
     implements WindowsBackgroundTaskClient {
@@ -70,6 +81,23 @@ final class _WindowsBackgroundTaskClient
 
     final hr = _bindings.registerComBackgroundTaskTimer(
         _backgroundTaskClassid, taskName, freshnessTime, oneShot);
+
+    if (hr != 0) {
+      throw WindowsUniversalException(
+          'Failed to register the Windows Background Task', hr);
+    }
+  }
+
+  @override
+  void registerUwpBackgroundTaskTimer(
+      String taskName, int freshnessTime, bool oneShot) {
+    if (freshnessTime < 15 || freshnessTime > 30 * 24 * 60) {
+      throw const WindowsUniversalException(
+          'The freshnessTime must be between 15 minutes and 30 days', 0);
+    }
+
+    final hr = _bindings.registerUwpBackgroundTaskTimer(
+        _backgroundTaskEntryPoint, taskName, freshnessTime, oneShot);
 
     if (hr != 0) {
       throw WindowsUniversalException(

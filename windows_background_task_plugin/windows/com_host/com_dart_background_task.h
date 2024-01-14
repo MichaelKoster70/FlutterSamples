@@ -46,7 +46,7 @@ struct __declspec(uuid(CLSID_ComDartBackgroundTask))
    /// Handles the cancellation of a background task.
    /// </summary>
    /// <param name="sender">The background task instance that was cancelled.</param>
-   /// <param name="">The reason the background task instance was cancelled.</param>
+   /// <param name="reason">The reason the background task instance was cancelled.</param>
    void __stdcall OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason);
 
 private:

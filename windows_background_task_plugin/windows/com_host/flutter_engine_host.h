@@ -81,8 +81,6 @@ public:
 
    DWORD _platformThreadId = 0;
    FlutterWindow _window;
-   std::wstring _title;
    TaskMessageHandlerFunction _taskMessageHandler;
    NotifyChannelInitializedHandler _notifyChannelInitializedHandler;
-   ShutdownHandler _shutdownHandler;
 };

@@ -34,6 +34,7 @@ static bool g_backgroundAccessRequested = false;
 // Forward declarations
 // ----------------------------------------------------------------------------
 void RegisterComTaskTimer(_In_ GUID* taskClassId, _In_ LPCWSTR taskName, _In_ UINT32 freshnessTime, _In_ BOOL oneShot, _In_ ConditionType conditionType[]);
+void RegisterUwpTaskTimer(_In_ LPCWSTR taskEntryPoint, _In_ LPCWSTR taskName, _In_ UINT32 freshnessTime, _In_ BOOL oneShot, _In_ ConditionType conditionType[]);
 void RequestBackgroundAccess();
 void RemoveBackgroundAccess();
 
@@ -59,6 +60,33 @@ HRESULT RegisterComBackgroundTaskTimer
 
       RequestBackgroundAccess();
       RegisterComTaskTimer(taskClassId, taskName, freshnessTime, oneShot, conditionType);
+
+      return S_OK;
+   }
+   catch (...)
+   {
+      return to_hresult();
+   }
+}
+
+HRESULT RegisterUwpBackgroundTaskTimer
+(
+   _In_ LPCWSTR taskEntryPoint,
+   _In_ LPCWSTR taskName,
+   _In_ UINT32 freshnessTime,
+   _In_ BOOL oneShot,
+   _In_ ConditionType conditionType[]
+)
+{
+   try
+   {
+      if (taskName == nullptr || taskEntryPoint == nullptr)
+      {
+         return E_INVALIDARG;
+      }
+
+      RequestBackgroundAccess();
+      RegisterUwpTaskTimer(taskEntryPoint, taskName, freshnessTime, oneShot, conditionType);
 
       return S_OK;
    }
@@ -148,4 +176,19 @@ void RegisterComTaskTimer
    auto trigger = TimeTrigger(freshnessTime, oneShot);
    auto classId = guid(*taskClassId);
    BackgroundTaskHelper::Register(taskName, classId, trigger, conditions);
+}
+
+void RegisterUwpTaskTimer
+(
+   _In_ LPCWSTR taskEntryPoint,
+   _In_ LPCWSTR taskName,
+   _In_ UINT32 freshnessTime,
+   _In_ BOOL oneShot,
+   _In_ ConditionType conditionType[]
+)
+{
+   auto conditions = winrt::single_threaded_vector<IBackgroundCondition>();
+
+   auto trigger = TimeTrigger(freshnessTime, oneShot);
+   BackgroundTaskHelper::Register(taskName, taskEntryPoint, trigger, conditions);
 }

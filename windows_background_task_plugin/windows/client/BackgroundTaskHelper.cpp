@@ -64,6 +64,26 @@ void BackgroundTaskHelper::Register(hstring taskName, guid classId, IBackgroundT
    builder.Register();
 }
 
+void BackgroundTaskHelper::Register(hstring taskName, hstring taskEntryPoint, IBackgroundTrigger trigger, IVector<IBackgroundCondition> conditions)
+{
+   // Check if the task is already registered.
+   if (IsTaskRegistered(taskName))
+   {
+      return;
+   }
+
+   // Register the background task with name and trigger.
+   auto builder = BackgroundTaskBuilder();
+   builder.Name(taskName);
+   builder.SetTrigger(trigger);
+   for (auto condition : conditions)
+   {
+      builder.AddCondition(condition);
+   }
+   builder.TaskEntryPoint(taskEntryPoint);
+   builder.Register();
+}
+
 void BackgroundTaskHelper::Unregister(hstring taskName)
 {
    // Unregister the background task with name.

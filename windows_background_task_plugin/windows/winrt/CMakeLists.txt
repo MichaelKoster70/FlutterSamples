@@ -38,14 +38,6 @@ endif()
 
 set(CPPWINRT ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}/bin/cppwinrt.exe)
 
-# execute_process(COMMAND
-#     ${CPPWINRT} -input sdk -output include
-#     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-#     RESULT_VARIABLE ret)
-# if (NOT ret EQUAL 0)
-#     message(FATAL_ERROR "Failed to run cppwinrt.exe")
-# endif()
-
 add_custom_target("winrt_header_generator"
     COMMAND ${CPPWINRT} -input sdk -output include
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

@@ -93,8 +93,8 @@ BEGIN
             VALUE "FileDescription", "Windows COM Background Task Host"
             VALUE "FileVersion", VERSION_AS_STRING
             VALUE "InternalName", "windows_background_task_host"
-            VALUE "LegalCopyright", "Copyright (C) 2023 Michael Koster. All rights reserved."
-            VALUE "OriginalFilename", "windows_console.exe"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Michael Koster. All rights reserved."
+            VALUE "OriginalFilename", "windows_background_task_host.exe"
             VALUE "ProductName", "Windows Background Task Sample"
             VALUE "ProductVersion", VERSION_AS_STRING
         END
