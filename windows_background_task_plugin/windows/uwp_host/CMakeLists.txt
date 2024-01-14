@@ -11,12 +11,19 @@
 # ----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.14)
 
+# define Windows SDK and Toolset versions
+set(WINDOWS_TARGET_PLATFORM_MIN_VERSION "10.0.17234.0")
+set(WINDOWS_TARGET_PLATFORM_VERSION "10.0.22621.0")
+set(CPPWINRT_VERSION "2.0.230706.1")
+set(WINDOWS_KITS_ROOT_DIR "C:/Program Files (x86)/Windows Kits/10")
+
 set(CMAKE_SYSTEM_NAME WindowsStore)
 set(CMAKE_SYSTEM_VERSION 10.0)
 
+cmake_policy(SET CMP0053 NEW)
+
 # Project-level configuration.
 set(PROJECT_NAME "windows_background_task_uwp_host")
-set(CPPWINRT_VERSION "2.0.230706.1")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 configure_file(
@@ -31,23 +38,11 @@ configure_file(
 )
 
 add_library(${PROJECT_NAME} SHARED 
-  "flutter_engine_host.cpp"
-  "flutter_engine_host.h"
-  "flutter_window.cpp"
-  "flutter_window.h"
-  "flutter_method_channel.cpp"
-  "flutter_method_channel.h"
-  "win32_window.cpp"
-  "win32_window.h"
-  "utils.cpp"
-  "utils.h"
-  "dll_main.cpp"
-  "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
-  "host.rc"
   "dart_background_task.idl"
   "dart_background_task.cpp"
   "dart_background_task.h"
   "debug_log.h"
+  "uwp_host.rc"
   "uwp_host.def"
   "${CMAKE_CURRENT_BINARY_DIR}/Generated Files/module.g.cpp"
 )
@@ -62,12 +57,6 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MAJOR=${FLUTT
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MINOR=${FLUTTER_VERSION_MINOR}")
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_PATCH=${FLUTTER_VERSION_PATCH}")
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTTER_VERSION_BUILD}")
-
-# Add dependency libraries and include directories. Add any application-specific dependencies here.
-target_link_libraries(${PROJECT_NAME} PRIVATE flutter flutter_wrapper_app)
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
-
-add_dependencies(${PROJECT_NAME} flutter)
 
 # Set C++ Compiler options
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
@@ -112,13 +101,24 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   ${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT.${CPPWINRT_VERSION}/build/native/Microsoft.Windows.CppWinRT.targets
 )
 
+# set_target_properties(${PROJECT_NAME} PROPERTIES 
+#   VS_DESKTOP_EXTENSIONS_VERSION ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}
+# )
+
+# Add the WindowsDesktop SDK package to the generated VS project
+set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY VS_USER_PROPS
+  "${WINDOWS_KITS_ROOT_DIR}/Extension SDKs/WindowsDesktop/${WINDOWS_TARGET_PLATFORM_VERSION}/DesignTime/CommonConfiguration/Neutral/WindowsDesktop.props"
+)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY VS_SDK_REFERENCES 
+  "WindowsDesktop, Version=${WINDOWS_TARGET_PLATFORM_VERSION}"
+)
+
 # override the faulty <Midl> property in the generated VS project
 set_property(SOURCE "dart_background_task.idl" PROPERTY VS_SETTINGS "OutputDirectory= ")
 
-# enable full Desktop Win32 API access - this will violate store 
-#target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP)
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
-  VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.17134.0
+  VS_WINDOWS_TARGET_PLATFORM_VERSION ${WINDOWS_TARGET_PLATFORM_VERSION}
+  VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION ${WINDOWS_TARGET_PLATFORM_MIN_VERSION}
   OUTPUT_NAME "windows_background_task_host"
 )

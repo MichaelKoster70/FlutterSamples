@@ -10,17 +10,12 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "DartBackgroundTask.g.h"
-#include "flutter_engine_host.h"
 
 // ----------------------------------------------------------------------------
 // Usings
 // ----------------------------------------------------------------------------
 using namespace winrt;
 using namespace winrt::Windows::ApplicationModel::Background;
-
-// ----------------------------------------------------------------------------
-// Defines
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // Declarations
@@ -46,27 +41,16 @@ namespace winrt::BackgroundTaskHost::implementation
       void __stdcall OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason);
 
    private:
-
-      /// <summary>
-      /// Handles the notification that the channel is initialized.
-      /// </summary>
-      /// <param name="taskName">The name of the DART task </param>
-      void HandleNotifyChannelInitialized(const std::string& taskName);
-
-      /// <summary>
-      /// Handles the notification that the task is completed.
-      /// </summary>
-      /// <param name="result">The result of the task.</param>
-      void HandleExecuteTaskCompleted(bool result);
-
       /// <summary>
       /// Debug helper to show a toast message
       /// </summary>
       /// <param name="message">The message to show</param>
       void DebugShowToast(hstring const& message);
 
-      FlutterEngineHost engineHost;
       BackgroundTaskDeferral taskDeferral = nullptr;
+
+      /// <summary>Win32 Event signaled when the background task is canceled.</summary>
+      handle canceledEvent;
    };
 }
 

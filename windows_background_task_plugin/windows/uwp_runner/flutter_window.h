@@ -13,6 +13,7 @@
 #include <flutter/flutter_view_controller.h>
 #include <memory>
 #include "win32_window.h"
+#include "flutter_method_channel.h"
 
 // ----------------------------------------------------------------------------
 // namespace usings
@@ -33,6 +34,12 @@ public:
    explicit FlutterWindow(const DartProject& project);
    virtual ~FlutterWindow();
 
+   /// <summary>
+   /// Returns the channel used to communicate with the Flutter engine.
+   /// </summary>
+   /// <returns>Shared pointer holding the channel.</returns>
+   std::shared_ptr<FlutterMethodChannel> GetChannel() const { return _channel; }
+
 protected:
    // Win32Window:
    bool OnCreate() override;
@@ -45,5 +52,8 @@ private:
 
    // The Flutter instance hosted by this window.
    std::unique_ptr<FlutterViewController> _flutterController;
+
+   // The channel used to communicate with the Flutter engine.
+   std::shared_ptr<FlutterMethodChannel> _channel;
 };
 

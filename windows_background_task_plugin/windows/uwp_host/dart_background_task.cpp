@@ -13,28 +13,23 @@
 #include "debug_log.h"
 #include "DartBackgroundTask.g.cpp"
 
-#include <winrt/Windows.UI.Notifications.h>
-#include <winrt/Windows.Data.Xml.Dom.h>
+#include "winrt/Windows.Foundation.h"
+#include "winrt/Windows.Foundation.Collections.h"
+#include "winrt/Windows.ApplicationModel.h"
+#include "winrt/Windows.ApplicationModel.AppService.h"
+#include "winrt/Windows.System.h"
+#include "winrt/Windows.UI.Notifications.h"
+#include "winrt/Windows.Data.Xml.Dom.h"
 
 // ----------------------------------------------------------------------------
 // Usings
 // ----------------------------------------------------------------------------
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::Foundation::Collections;
+using namespace winrt::Windows::ApplicationModel;
+using namespace winrt::Windows::ApplicationModel::AppService;
+using namespace winrt::Windows::System;
 using namespace winrt::Windows::UI::Notifications;
-
-// ----------------------------------------------------------------------------
-// Externals
-// ----------------------------------------------------------------------------
-extern flutter::DartProject g_project;
-
-// ----------------------------------------------------------------------------
-// Consstant
-// ----------------------------------------------------------------------------
-
-// Message sent to the main thread to notify that the channel is initialized.
-const UINT kNotifyChannelInitialized = WM_USER + 2;
-
-// Message sent to the main thread to notify that the task is completed.
-const UINT kExecuteTaskCompleted = WM_USER + 3;
 
 // ----------------------------------------------------------------------------
 // Class Implementation
@@ -42,55 +37,47 @@ const UINT kExecuteTaskCompleted = WM_USER + 3;
 namespace winrt::BackgroundTaskHost::implementation
 {
    DartBackgroundTask::DartBackgroundTask()
-      : engineHost(g_project)
    {
       //EMPTY_BODY
    }
 
    void DartBackgroundTask::Run(IBackgroundTaskInstance const& taskInstance)
    {
-      DebugLog("NATIVE::DartBackgroundTask::Run");
+      DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::Run Enter");
+
+      taskDeferral = taskInstance.GetDeferral();
 
       // Get the name of the task, use it as identifer on what to call in the dart code
       auto taskName = taskInstance.Task().Name();
+
+      DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::Run: taskName={}", winrt::to_string(taskName));
 
       DebugShowToast(L"Starting Task: " + taskName);
 
       taskInstance.Canceled({ this, &DartBackgroundTask::OnCanceled });
 
-      engineHost.SetNotifyChannelInitializedHandler([this, taskName]() {
-         engineHost.PostTaskMessage(kNotifyChannelInitialized, NULL, NULL);
-         });
-
-      engineHost.SetTaskMessageHandler([this, taskName](UINT message, WPARAM wParam, LPARAM lParam)
-         {
-            switch (message)
-            {
-            case kNotifyChannelInitialized:
-               HandleNotifyChannelInitialized(winrt::to_string(taskName));
-               return false;
-
-            case kExecuteTaskCompleted:
-               HandleExecuteTaskCompleted(wParam);
-               return false;
-
-            default:
-               return true;
-            }
-         });
-
-      DebugLog("NATIVE::DartBackgroundTask::Run -before engineHost.Run");
-      engineHost.Run(taskName.c_str());
-      DebugLog("NATIVE::DartBackgroundTask::Run -after  engineHost.Run");
+      try
+      {
+         FullTrustProcessLauncher::LaunchFullTrustProcessForCurrentAppAsync(L"DartUwpBackgroundTask").get();
+      }
+      catch (const winrt::hresult_error& ex)
+      {
+         auto hr = ex.code();
+         DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::Run: HR={:x}, text={}", hr.value, winrt::to_string(ex.message()));
+      }
+      catch (...)
+      {
+         DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::Run: unknown exception");
+      }
 
       // mark the task as completed
       taskDeferral.Complete();
+      DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::Run Exit");
    }
 
    void __stdcall DartBackgroundTask::OnCanceled(_In_ IBackgroundTaskInstance sender, _In_ BackgroundTaskCancellationReason reason)
    {
-      DebugLog("NATIVE::DartBackgroundTask::OnCanceled");
-      engineHost.Shutdown();
+      DebugLog("NATIVE::UWP_HOST::DartBackgroundTask::OnCanceled");
    }
 
    void DartBackgroundTask::DebugShowToast(hstring const& message)
@@ -106,20 +93,5 @@ namespace winrt::BackgroundTaskHost::implementation
       // and show
       auto toast = ToastNotification(toastXml);
       ToastNotificationManager::CreateToastNotifier().Show(toast);
-   }
-
-   void DartBackgroundTask::HandleNotifyChannelInitialized(const std::string& taskName)
-   {
-      DebugLog("NATIVE::ComDartBackgroundTask::HandleNotifyChannelInitialized");
-      engineHost.GetChannel()->ExecuteTask(taskName, [this](bool result)
-         {
-            engineHost.PostTaskMessage(kExecuteTaskCompleted, result, NULL);
-         });
-   }
-
-   void DartBackgroundTask::HandleExecuteTaskCompleted(bool result)
-   {
-      DebugLog("NATIVE::ComDartBackgroundTask::HandleExecuteTaskCompleted");
-      engineHost.Shutdown();
    }
 }

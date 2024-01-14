@@ -31,6 +31,7 @@ add_executable(${PROJECT_NAME} WIN32
   "com_initializer.h"
   "com_dart_background_task.cpp"
   "com_dart_background_task.h"
+  "debug_log.h"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
   "host.rc"
   "host.manifest"
@@ -54,13 +55,12 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTT
 
 # Add dependency libraries and include directories. Add any application-specific dependencies here.
 target_link_libraries(${PROJECT_NAME} PRIVATE flutter flutter_wrapper_app)
-#target_link_libraries(${PROJECT_NAME} PRIVATE "dwmapi.lib")
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 add_dependencies(${PROJECT_NAME} flutter)
 
-# Set the C++ standard to C++ 17
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+# Set the C++ standard to C++ 20
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   OUTPUT_NAME "windows_background_task_host"

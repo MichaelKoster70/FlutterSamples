@@ -8,21 +8,23 @@
 // ----------------------------------------------------------------------------
 #pragma once
 
+// Enable debug logging to the debugger and/or console
+// comment out to disable
+#if _DEBUG
+//#define DEBUG_LOG_DEBUGGER_ENABLED
+#define DEBUG_LOG_CONSOLE_ENABLED
+#endif
+
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
 #include <string>
 #include <format>
+#ifdef DEBUG_LOG_DEBUGGER_ENABLED
 #include <Windows.h>
-
-// ----------------------------------------------------------------------------
-// Defines
-// ----------------------------------------------------------------------------
-
-// Enable debug logging to the debugger and/or console
-// comment out to disable
-#if _DEBUG
-#define DEBUG_LOG_DEBUGGER_ENABLED
+#endif
+#ifdef DEBUG_LOG_CONSOLE_ENABLED
+#include <iostream>
 #endif
 
 // ----------------------------------------------------------------------------
@@ -44,5 +46,9 @@ void DebugLog(std::string_view fmt, Args&&... args)
 
 #ifdef DEBUG_LOG_DEBUGGER_ENABLED
    OutputDebugStringA(formattedMessage.c_str());
+#endif
+
+#ifdef DEBUG_LOG_CONSOLE_ENABLED
+   std::cout << formattedMessage << std::endl;
 #endif
 }

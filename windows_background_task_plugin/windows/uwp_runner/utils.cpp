@@ -56,55 +56,47 @@ void CreateAndAttachConsole()
 }
 
 
-void ConfigureDartProject(flutter::DartProject& project)
+void ConfigureDartProject(flutter::DartProject& project, std::string entryPoint)
 {
-   auto commandLineArguments = GetCommandLineArguments();
-   project.set_dart_entrypoint_arguments(std::move(commandLineArguments));
+    project.set_dart_entrypoint(entryPoint);
 }
 
-std::vector<std::string> GetCommandLineArguments()
+std::string Utf8FromUtf16(const std::wstring& utf16String)
 {
-   // Convert the UTF-16 command line arguments to UTF-8 for the Engine to use.
+   int targetLength = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String.data(), -1, nullptr, 0, nullptr, nullptr) - 1;
+   if (targetLength > 0)
+   {
+      std::string utf8String;
+      utf8String.resize(targetLength);
+
+      int convertedLength = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String.c_str(), targetLength, utf8String.data(), targetLength, nullptr, nullptr);
+      if (convertedLength != 0)
+      {
+         return utf8String;
+      }
+   }
+
+   return std::string();
+}
+
+std::vector<std::wstring> GetCommandLineArguments()
+{
    int argc;
    wchar_t** argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
    if (argv == nullptr)
    {
-      return std::vector<std::string>();
+      return std::vector<std::wstring>();
    }
 
-   std::vector<std::string> commandLineArguments;
+   std::vector<std::wstring> commandLineArguments;
 
    // Skip the first argument as it's the binary name.
    for (int i = 1; i < argc; i++)
    {
-      commandLineArguments.push_back(Utf8FromUtf16(argv[i]));
+      commandLineArguments.push_back(argv[i]);
    }
 
    ::LocalFree(argv);
 
    return commandLineArguments;
-}
-
-std::string Utf8FromUtf16(const wchar_t* utf16String)
-{
-   if (utf16String == nullptr)
-   {
-      return std::string();
-   }
-
-   int targetLength = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String, -1, nullptr, 0, nullptr, nullptr) - 1; // remove the trailing null character
-   int inputLength = (int)wcslen(utf16String);
-   std::string utf8String;
-   if (targetLength <= 0 || targetLength > utf8String.max_size())
-   {
-      return utf8String;
-   }
-
-   utf8String.resize(targetLength);
-   int converted_length = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String, inputLength, utf8String.data(), targetLength, nullptr, nullptr);
-   if (converted_length == 0)
-   {
-      return std::string();
-   }
-   return utf8String;
 }
