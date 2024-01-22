@@ -23,8 +23,16 @@ doc/api/
 *.js.deps
 *.js.map
 
+
 .flutter-plugins
 .flutter-plugins-dependencies
-/.vs
-/windows_console/windows/runner/.vs
-/windows_background_task_plugin/windows/host/host.aps
+
+#Flutter generated files
+**/flutter/generated_plugins.cmake
+**/flutter/generated_plugin_registrant.cc
+**/flutter/generated_plugin_registrant.h
+
+#Visual Studio generated files
+*.aps
+**/.vs
+
