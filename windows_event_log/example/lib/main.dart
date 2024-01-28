@@ -13,9 +13,15 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:windows_event_log/event_log_consumer.dart';
+import 'package:windows_event_log/event_log_provider.dart';
+import 'package:windows_event_log_example/events.dart';
 
 void main() {
   final app = WindowsEventLog.application;
+
+  final provider = WindowsEventLogProviderFactory.create(sampleProviderId);
+
+  provider.writeEventWithString(logApplicatonInfo, "Sample Info Event");
 
   // Just for debugging purposes, print all events
   for (final event in app.allEvents) {
@@ -24,7 +30,6 @@ void main() {
     print(event.xml.toString());
     print('============');
   }
-
   runApp(const MyApp());
 }
 
