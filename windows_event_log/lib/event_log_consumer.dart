@@ -8,4 +8,4 @@
 /// Windows Event Log Consumer library
 library event_log_consumer;
 
-export 'src/event_log_consumer.dart';
+export 'src/consumer.dart';

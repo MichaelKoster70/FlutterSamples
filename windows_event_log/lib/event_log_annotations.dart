@@ -5,10 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-part of 'event_log_consumer.dart';
+/// Library holding all annotations (@annotation()) used by client code to trigger code generation.
+library event_log_annotations;
 
-/// Well-known event log names
-const String _windowsLogsApplication = 'Application';
-const String _windowsLogsSecurity = 'Security';
-const String _windowsLogsSetup = 'Setup';
-const String _windowsLogsSystem = 'System';
+export 'src/annotations.dart';

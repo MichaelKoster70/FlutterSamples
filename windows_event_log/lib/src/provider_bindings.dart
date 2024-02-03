@@ -8,7 +8,7 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
-import 'package:windows_event_log/src/event_log_provider.dart';
+import 'package:windows_event_log/src/provider.dart';
 
 /// Bindings for `winevt.h` wrappers.
 ///
@@ -121,6 +121,7 @@ final class WindowsEventLogProviderBindings {
         Pointer<EVENT_DESCRIPTOR>,
       )>('Win32EventWriteNoData');
 
+  // ignore: non_constant_identifier_names
   late final _EventWriteWithInt64 = _nativeApi.lookupFunction<
       Int32 Function(
         Uint64,

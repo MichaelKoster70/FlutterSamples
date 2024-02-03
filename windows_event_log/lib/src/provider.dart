@@ -5,9 +5,8 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
-import 'package:windows_event_log/src/event_log_provider_bindings.dart';
+import 'package:windows_event_log/src/provider_bindings.dart';
 
 /// provides a factory for creating Windows Event Log Providers
 abstract class WindowsEventLogProviderFactory {
