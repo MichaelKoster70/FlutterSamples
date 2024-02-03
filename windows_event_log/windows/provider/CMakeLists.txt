@@ -17,3 +17,27 @@ cmake_minimum_required(VERSION 3.14)
 # Project-level configuration.
 set(PROJECT_NAME "windows_event_log_provider")
 project(${PROJECT_NAME} LANGUAGES CXX)
+
+add_library(${PROJECT_NAME} SHARED 
+  "DllMain.cpp"
+  "EventLogProviderApi.h"
+  "EventLogProviderApi.cpp"
+  "pch.h"
+  "DllExports.h"
+  "version.rc"
+)
+
+# Add preprocessor definitions for the build version.
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MAJOR=${FLUTTER_VERSION_MAJOR}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_MINOR=${FLUTTER_VERSION_MINOR}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_PATCH=${FLUTTER_VERSION_PATCH}")
+target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION_BUILD=${FLUTTER_VERSION_BUILD}")
+
+# Add preprocessor definitions
+target_compile_definitions(${PROJECT_NAME} PRIVATE EVENT_LOG_PROVIDER_EXPORTS)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  PUBLIC_HEADER EventLogProviderApi.h
+  OUTPUT_NAME "EventLogProvider"
+)

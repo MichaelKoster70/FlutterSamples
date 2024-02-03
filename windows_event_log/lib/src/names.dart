@@ -5,7 +5,10 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-/// Windows Event Log Consumer library
-library event_log_consumer;
+part of 'consumer.dart';
 
-export 'src/consumer.dart';
+/// Well-known event log names
+const String _windowsLogsApplication = 'Application';
+const String _windowsLogsSecurity = 'Security';
+const String _windowsLogsSetup = 'Setup';
+const String _windowsLogsSystem = 'System';

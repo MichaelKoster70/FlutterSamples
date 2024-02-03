@@ -17,11 +17,12 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 
 # Invoke the build for all native code assets.
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/consumer")
-#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/provider")
-
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/provider")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/data")
 # List of absolute paths to libraries that should be bundled with the plugin.
 set(windows_event_log_bundled_libraries
   $<TARGET_FILE:windows_event_log_consumer>
-#  $<TARGET_FILE:windows_event_log_provider>
+  $<TARGET_FILE:windows_event_log_provider>
+  $<TARGET_FILE:windows_event_log_data>
   PARENT_SCOPE
 )

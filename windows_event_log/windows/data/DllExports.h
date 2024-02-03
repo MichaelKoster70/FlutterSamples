@@ -4,8 +4,10 @@
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
+#pragma once
 
-/// Windows Event Log Consumer library
-library event_log_consumer;
-
-export 'src/consumer.dart';
+#ifdef EVENT_LOG_DATA_EXPORTS
+#define EVENT_LOG_DATA_API __declspec(dllexport)
+#else
+#define EVENT_LOG_DATA_API __declspec(dllimport)
+#endif

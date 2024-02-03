@@ -5,7 +5,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-/// Windows Event Log Consumer library
-library event_log_consumer;
+/// Library holding all annotations (@annotation()) used by client code to trigger code generation.
+library event_log_annotations;
 
-export 'src/consumer.dart';
+export 'src/annotations.dart';

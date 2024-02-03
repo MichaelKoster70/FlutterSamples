@@ -45,7 +45,11 @@ final class WindowsEventLogConsumerBindings {
   /// Gets [eventSize] events and returns them in [events].
   /// returns [true] if there are more events to get.
   (bool success, int returned) evtNext(
-      int resultSet, int eventSize, Pointer<IntPtr> events, int timeout) {
+    int resultSet,
+    int eventSize,
+    Pointer<IntPtr> events,
+    int timeout,
+  ) {
     return using((Arena arena) {
       final lastError = arena<Uint32>();
       final returned = arena<Uint32>();
@@ -62,8 +66,13 @@ final class WindowsEventLogConsumerBindings {
   /// Renders the values of an event into a buffer
   /// see: https://docs.microsoft.com/en-us/windows/win32/api/winevt/nf-winevt-evtrender
   /// Throws a [WindowsException] if the event cannot be rendered.
-  (bool success, int bufferUsed, int propertyCount) evtRender(int context,
-      int fragment, int flags, int bufferSize, Pointer<IntPtr> buffer) {
+  (bool success, int bufferUsed, int propertyCount) evtRender(
+    int context,
+    int fragment,
+    int flags,
+    int bufferSize,
+    Pointer<IntPtr> buffer,
+  ) {
     return using((Arena arena) {
       final lastError = arena<Uint32>();
       final nativeBufferUsed = arena<Uint32>();
@@ -198,30 +207,78 @@ final class WindowsEventLogConsumerBindings {
   // ignore: non_constant_identifier_names
   late final _EvtQuery = _nativeApi.lookupFunction<
       IntPtr Function(
-          IntPtr, Pointer<Utf16>, Pointer<Utf16>, Uint32, Pointer<Uint32>),
-      int Function(int, Pointer<Utf16>, Pointer<Utf16>, int,
-          Pointer<Uint32>)>('Win32EvtQuery');
+        IntPtr,
+        Pointer<Utf16>,
+        Pointer<Utf16>,
+        Uint32,
+        Pointer<Uint32>,
+      ),
+      int Function(
+        int,
+        Pointer<Utf16>,
+        Pointer<Utf16>,
+        int,
+        Pointer<Uint32>,
+      )>('Win32EvtQuery');
 
   // ignore: non_constant_identifier_names
   late final _EvtNext = _nativeApi.lookupFunction<
-      BOOL Function(IntPtr, Uint32, Pointer<IntPtr>, Uint32, Pointer<Uint32>,
-          Pointer<Uint32>),
-      int Function(int, int, Pointer<IntPtr>, int, Pointer<Uint32>,
-          Pointer<Uint32>)>('Win32EvtNext');
+      BOOL Function(
+        IntPtr,
+        Uint32,
+        Pointer<IntPtr>,
+        Uint32,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+      ),
+      int Function(
+        int,
+        int,
+        Pointer<IntPtr>,
+        int,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+      )>('Win32EvtNext');
 
   // ignore: non_constant_identifier_names
   late final _EvtRender = _nativeApi.lookupFunction<
-      IntPtr Function(IntPtr, IntPtr, Uint32, Uint32, Pointer<IntPtr>,
-          Pointer<Uint32>, Pointer<Uint32>, Pointer<Uint32>),
-      int Function(int, int, int, int, Pointer<IntPtr>, Pointer<Uint32>,
-          Pointer<Uint32>, Pointer<Uint32>)>('Win32EvtRender');
+      IntPtr Function(
+        IntPtr,
+        IntPtr,
+        Uint32,
+        Uint32,
+        Pointer<IntPtr>,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+      ),
+      int Function(
+        int,
+        int,
+        int,
+        int,
+        Pointer<IntPtr>,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+      )>('Win32EvtRender');
 
   // ignore: non_constant_identifier_names
   late final _EvtOpenPublisherMetadata = _nativeApi.lookupFunction<
       IntPtr Function(
-          IntPtr, Pointer<Utf16>, Pointer<Utf16>, Uint32, Pointer<Uint32>),
-      int Function(int, Pointer<Utf16>, Pointer<Utf16>, int,
-          Pointer<Uint32>)>('Win32EvtOpenPublisherMetadata');
+        IntPtr,
+        Pointer<Utf16>,
+        Pointer<Utf16>,
+        Uint32,
+        Pointer<Uint32>,
+      ),
+      int Function(
+        int,
+        Pointer<Utf16>,
+        Pointer<Utf16>,
+        int,
+        Pointer<Uint32>,
+      )>('Win32EvtOpenPublisherMetadata');
 
   // ignore: non_constant_identifier_names
   late final _EvtFormatMessage = _nativeApi.lookupFunction<
@@ -246,8 +303,15 @@ final class WindowsEventLogConsumerBindings {
 
   // ignore: non_constant_identifier_names
   late final _Win32LookupAccount = _nativeApi.lookupFunction<
-      BOOL Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>,
-          Pointer<Uint32>, Pointer<Utf8>, Pointer<Uint32>, Pointer<Uint32>),
+      BOOL Function(
+        Pointer<Utf8>,
+        Pointer<Utf8>,
+        Pointer<Utf8>,
+        Pointer<Uint32>,
+        Pointer<Utf8>,
+        Pointer<Uint32>,
+        Pointer<Uint32>,
+      ),
       int Function(
           Pointer<Utf8>,
           Pointer<Utf8>,

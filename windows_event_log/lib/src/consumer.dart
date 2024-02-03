@@ -12,11 +12,11 @@ import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
-import 'package:windows_event_log/src/event_log_consumer_bindings.dart';
+import 'package:windows_event_log/src/consumer_bindings.dart';
 import 'package:xml/xml.dart';
 import 'package:xml/xpath.dart';
 
-part 'event_log_names.dart';
+part 'names.dart';
 
 /// The Serverity level of an event
 enum SeverityLevel {
