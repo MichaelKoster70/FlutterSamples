@@ -49,3 +49,8 @@ add_custom_command(
 set_target_properties(${PROJECT_NAME} PROPERTIES
   OUTPUT_NAME "EventLogData"
 )
+
+set(${PROJECT_NAME}
+  $<TARGET_FILE:${PROJECT_NAME}>
+  PARENT_SCOPE
+)

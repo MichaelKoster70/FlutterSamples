@@ -137,6 +137,8 @@ final class WindowsEventLogConsumerBindings {
             return 'The event definition could not be found for event id ($messageId).';
           case ERROR_EVT_MESSAGE_NOT_FOUND:
             return 'The message resource is present but the message is not found in.';
+          case ERROR_FILE_NOT_FOUND:
+            return 'The specified file was not found.';
           default:
             throw WindowsException(HRESULT_FROM_WIN32(lastError.value));
         }
