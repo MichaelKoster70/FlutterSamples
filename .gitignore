@@ -36,3 +36,4 @@ doc/api/
 *.aps
 **/.vs
 
+*.dart

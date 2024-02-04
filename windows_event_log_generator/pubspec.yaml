@@ -1,0 +1,28 @@
+name: windows_event_log_generator
+description: "A new Flutter package project."
+version: 0.0.2
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: '>=3.2.4 <4.0.0'
+
+dependencies:
+  path: ^1.8.0
+  build: ^2.4.0
+  analyzer: ">=5.1.0 <7.0.0"
+  code_builder: ^4.8.0
+  dart_style: ^2.3.0
+  source_gen: ^1.4.0
+  win32: ^5.2.0
+  windows_event_log:
+    path: ../windows_event_log
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+# For information on the generic Dart part of this file, see the
+
+# The following section is specific to Flutter packages.
+flutter:

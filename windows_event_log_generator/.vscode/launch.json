@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "windows_event_log_generator",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "D:\\Projects\\FlutterSamples\\windows_event_log\\example",
+            "program": "D:\\Projects\\FlutterSamples\\windows_event_log\\example\\.dart_tool\\build\\entrypoint\\build.dart",
+            "args": [
+                "build"
+            ]
+        }
+    ]
+}

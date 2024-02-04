@@ -13,14 +13,16 @@ dependencies:
 
   windows_event_log:
     path: ../
-  win32: 5.0.0
+  win32: 5.2.0
 
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  build_runner: ^2.4.0
+  windows_event_log_generator:
+    path: ../../windows_event_log_generator
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^3.0.0
 
 flutter:

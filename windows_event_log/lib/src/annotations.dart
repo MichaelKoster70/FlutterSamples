@@ -10,6 +10,7 @@
 /// See: https://learn.microsoft.com/en-us/windows/win32/etw/writing-manifest-based-events
 final class ManifestEvents {
   /// The relative path to the manifest file (.man) holding the event definitions
+  /// Specify the relative path to the manifest based on the root of the project.
   final String manifestPath;
 
   const ManifestEvents({required this.manifestPath});
