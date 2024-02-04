@@ -36,3 +36,5 @@ doc/api/
 *.aps
 **/.vs
 
+# generated files
+*.g.dart
