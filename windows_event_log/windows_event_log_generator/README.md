@@ -1,39 +1,38 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Implements the matchung code generator for the windows_event_log package to automate the generation of event descriptor.
+This enables you to automatically keep the manifest file in sync with the DART code.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* Generates event descriptor entries read from a manifest based Windows ETW provider.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Add the following dev dependency to your pubspec.yaml file
 
+```yaml
+dev_dependencies:
+  build_runner: ^2.4.0
+  windows_event_log_generator:
+    path: ../../windows_event_log_generator
+```    
+
+Add the @ManifestEvents annotation to a mantching class
 ```dart
-const like = 'sample';
+@ManifestEvents(manifestPath: 'windows\\data\\sample.man')
+final class Events {
+  const Events._();
+}
 ```
 
-## Additional information
+Run the generator using build_runner
+```
+dart run build_runner build
+```
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+
+
+
+
+

@@ -10,28 +10,28 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 import 'package:windows_event_log/event_log_consumer.dart';
 import 'package:windows_event_log/event_log_provider.dart';
 import 'package:windows_event_log_example/events.dart';
 
 void main() {
-  final app = WindowsEventLog.application;
+  final provider =
+      WindowsEventLogProviderFactory.create(Events.sampleProviderId);
 
-  final provider = WindowsEventLogProviderFactory.create(sampleProviderId);
-
-  provider.writeEventWithString(logApplicatonInfo, "Sample Info Event");
+  provider.writeEventWithString(Events.logApplicatonInfo, "Sample Info Event");
 
   // Just for debugging purposes, print all events
-  for (final event in app.allEvents) {
-    print(event.message);
-    print('------------');
-    print(event.xml.toString());
-    print('============');
-  }
+  //
+  // final app = WindowsEventLog.application;
+  // for (final event in app.allEvents) {
+  //   print(event.message);
+  //   print('------------');
+  //   print(event.xml.toString());
+  //   print('============');
+  // }
 
-  //runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -42,56 +42,52 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late int sumResult;
-  late Future<int> sumAsyncResult;
-
+  final app = WindowsEventLog.application;
+  final allEvents = List<EventRecord>.empty(growable: true);
   @override
   void initState() {
     super.initState();
+
+    allEvents.addAll(app.allEvents);
   }
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 10);
+    const textStyle = TextStyle(fontSize: 10);
+    const spacerSmall = SizedBox(height: 2);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Native Packages'),
+          title: const Text('Windows Event Viewer'),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
+        body: ListView.builder(
+          itemCount: allEvents.length,
+          itemBuilder: (context, index) {
+            final event = allEvents[index];
+            return Column(
+              children: <Widget>[
+                Text(
+                  event.message,
                   style: textStyle,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
                 spacerSmall,
                 Text(
-                  'sum(1, 2) = $sumResult',
+                  event.xml.toString(),
                   style: textStyle,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                 ),
                 spacerSmall,
-                FutureBuilder<int>(
-                  future: sumAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<int> value) {
-                    final displayValue =
-                        (value.hasData) ? value.data : 'loading';
-                    return Text(
-                      'await sumAsync(3, 4) = $displayValue',
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                    );
-                  },
+                const Divider(
+                  color: Colors.black,
+                  height: 5,
+                  thickness: 5,
+                  indent: 20,
+                  endIndent: 0,
                 ),
               ],
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
