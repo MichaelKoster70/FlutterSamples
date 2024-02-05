@@ -13,37 +13,42 @@ import 'package:windows_event_log/event_log_annotations.dart';
 
 part 'events.g.dart';
 
-// Provider GUID = 6018d8a9-5ead-44f8-ab34-9c795b3d2c84
-// EXTERN_C __declspec(selectany) const GUID sample_provider = {0x6018d8a9, 0x5ead, 0x44f8, {0xab, 0x34, 0x9c, 0x79, 0x5b, 0x3d, 0x2c, 0x84}};
-final sampleProviderId =
-    Guid.fromComponents(0x6018d8a9, 0x5ead, 0x44f8, 0x842c3d5b799c34ab);
-
-// Event Descriptor definitions
-const logApplicationCritical =
-    EventDescriptor(0x1, 0x1, 0x9, 0x1, 0x0, 0x0, 0x4000000000000000);
-const logApplicationError =
-    EventDescriptor(0x2, 0x1, 0x9, 0x2, 0x0, 0x0, 0x4000000000000000);
-const logApplicationWarning =
-    EventDescriptor(0x3, 0x1, 0x9, 0x3, 0x0, 0x0, 0x4000000000000000);
-const logApplicatonInfo =
-    EventDescriptor(0x4, 0x1, 0x9, 0x4, 0x0, 0x0, 0x4000000000000000);
-const logOperationalCritical =
-    EventDescriptor(0x5, 0x1, 0x10, 0x4, 0x0, 0x0, 0x8000000000000000);
-const logOperationalError =
-    EventDescriptor(0x6, 0x1, 0x10, 0x3, 0x0, 0x0, 0x8000000000000000);
-const logOperationalWarning =
-    EventDescriptor(0x7, 0x1, 0x10, 0x3, 0x0, 0x0, 0x8000000000000000);
-const logOperationalInfo =
-    EventDescriptor(0x8, 0x1, 0x10, 0x4, 0x0, 0x0, 0x8000000000000000);
-const logDebug =
-    EventDescriptor(0x9, 0x1, 0x11, 0x5, 0x0, 0x0, 0x2000000000000000);
-
+/// Static class to hold the event descriptors generated from the manifest
 @ManifestEvents(manifestPath: 'windows\\data\\sample.man')
 final class Events {
   const Events._();
 
+  /// The GUID of the ETW provider
   static Guid get sampleProviderId => _Events.sampleProviderId;
 
+  /// Event descriptor for the logApplicationCritical event writing to the application log
   static EventDescriptor get logApplicationCritical =>
       _Events.logApplicationCritical;
+
+  /// Event descriptor for the logApplicationError event writing to the application log
+  static EventDescriptor get logApplicationError => _Events.logApplicationError;
+
+  /// Event descriptor for the logApplicationWarning event writing to the application log
+  static EventDescriptor get logApplicationWarning =>
+      _Events.logApplicationWarning;
+
+  /// Event descriptor for the logApplicatonInfo event  writing to the application log
+  static EventDescriptor get logApplicatonInfo => _Events.logApplicatonInfo;
+
+  /// Event descriptor for the logOperationalCritical event writing to the operational log
+  static EventDescriptor get logOperationalCritical =>
+      _Events.logOperationalCritical;
+
+  /// Event descriptor for the logOperationalError event writing to the operational log
+  static EventDescriptor get logOperationalError => _Events.logOperationalError;
+
+  /// Event descriptor for the logOperationalWarning event writing to the operational log
+  static EventDescriptor get logOperationalWarning =>
+      _Events.logOperationalWarning;
+
+  /// Event descriptor for the logOperationalInfo event writing to the operational log
+  static EventDescriptor get logOperationalInfo => _Events.logOperationalInfo;
+
+  /// Event descriptor for the logDebug event writing to the debug log
+  static EventDescriptor get logDebug => _Events.logDebug;
 }
