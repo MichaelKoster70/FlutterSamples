@@ -1,7 +1,14 @@
+# ----------------------------------------------------------------------------
+# <copyright company="Michael Koster">
+#   Copyright (c) Michael Koster. All rights reserved.
+#   Licensed under the MIT License.
+# </copyright>
+# ----------------------------------------------------------------------------
+
 name: windows_sync
-description: "A new Flutter FFI plugin project."
-version: 0.0.1
-homepage:
+description: "A new Flutter FFI plugin providing Windows sync primitives."
+version: 0.1.0
+homepage: 
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -10,11 +17,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  ffi: ^2.0.0
-  win32: ^5.2.0
-  plugin_platform_interface: ^2.0.2
+  ffi: ^2.1.0
+  win32: ^5.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+
+flutter:
+  plugin:
+    platforms:
+      windows:
+        ffiPlugin: true

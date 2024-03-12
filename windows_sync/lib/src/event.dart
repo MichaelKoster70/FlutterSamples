@@ -10,6 +10,7 @@ import 'dart:isolate';
 
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
+import 'package:windows_sync/src/event_bindings.dart';
 
 part 'event_implementation.dart';
 
@@ -28,7 +29,7 @@ abstract interface class Event {
 
   factory Event.open(String name,
           {int desiredAccess = SYNCHRONIZE, bool inheritHandle = false}) =>
-      _Event.open(name, desiredAccess, inheritHandle);
+      _Event.open(desiredAccess, inheritHandle, name);
 
   /// Sets the event to the signaled state.
   void set();

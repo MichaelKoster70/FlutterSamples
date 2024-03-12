@@ -8,43 +8,37 @@
 part of 'event.dart';
 
 class _Event implements Event {
+  static final _bindings = WindowsSyncBindings(pluginNativeApi);
   final int _handle;
   _Event(int handle) : _handle = handle;
 
   factory _Event.create(bool manualReset, bool initialState, String? name) {
-    return using((Arena arena) {
-      final handle = CreateEvent(
-        nullptr,
-        manualReset ? TRUE : FALSE,
-        initialState ? TRUE : FALSE,
-        name == null ? nullptr : name.toNativeUtf16(allocator: arena),
-      );
-      if (handle == 0) {
-        throw WindowsException(HRESULT_FROM_WIN32(GetLastError()));
-      }
-      return _Event(handle);
-    });
+    final (handle, lastError) =
+        _bindings.createEvent(manualReset, initialState, name);
+
+    if (handle == 0) {
+      throw WindowsException(HRESULT_FROM_WIN32(lastError));
+    }
+    return _Event(handle);
   }
 
-  factory _Event.open(String name, int desiredAccess, bool inheritHandle) {
-    return using((Arena arena) {
-      final nativeName = name.toNativeUtf16(allocator: arena);
-      final handle = OpenEvent(
-        desiredAccess,
-        inheritHandle ? TRUE : FALSE,
-        nativeName,
-      );
-      if (handle == 0) {
-        throw WindowsException(HRESULT_FROM_WIN32(GetLastError()));
-      }
-      return _Event(handle);
-    });
+  factory _Event.open(int desiredAccess, bool inheritHandle, String name) {
+    final (handle, lastError) =
+        _bindings.openEvent(desiredAccess, inheritHandle, name);
+
+    if (handle == 0) {
+      throw WindowsException(HRESULT_FROM_WIN32(lastError));
+    }
+    return _Event(handle);
   }
 
   @override
   void set() {
     // Set the event.
-    SetEvent(_handle);
+    final success = SetEvent(_handle);
+    if (success == 0) {
+      throw WindowsException(HRESULT_FROM_WIN32(GetLastError()));
+    }
   }
 
   @override
