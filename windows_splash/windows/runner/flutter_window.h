@@ -13,6 +13,7 @@
 #include <flutter/flutter_view_controller.h>
 #include <memory>
 #include "win32_window.h"
+#include "win32_splash_screen.h"
 
 // ----------------------------------------------------------------------------
 // Class declarations
@@ -37,6 +38,8 @@ protected:
 private:
    // The project to run.
    flutter::DartProject _project;
+
+   Win32SplashScreen _splashScreen;
 
    // The Flutter instance hosted by this window.
    std::unique_ptr<flutter::FlutterViewController> _flutterController;

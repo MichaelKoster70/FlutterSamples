@@ -14,6 +14,7 @@
 
 #include "flutter_window.h"
 #include "utils.h"
+#include "win32_splash_screen.h"
 
 // ----------------------------------------------------------------------------
 // Class implementations
