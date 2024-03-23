@@ -60,6 +60,7 @@ IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
 //
 
 IDB_SPLASH_SCREEN       PNG                    "resources\splash_screen.png"
+IDB_SPLASH_SCREEN_2       PNG                    "resources\splash_screen_round.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //
