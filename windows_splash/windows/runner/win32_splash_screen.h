@@ -35,10 +35,9 @@ public:
   /// as appropriate for the default monitor. The window is invisible until |Show| is called. 
   /// </summary>
    /// <param name="owner">The window owning the splash screen.</param>
-  /// <param name="origin">The position where to show the window.</param>
-  /// <param name="size">the initial size of the windows.</param>
-  /// <returns>Returns true if the window was created successfully.</returns>
-  bool Create(const Win32Window& owner);
+   /// <param name="minimumHideDelayTime">The minimum time the splash screen should be visible in MS.</param>
+   // <returns>Returns true if the window was created successfully.</returns>
+  bool Create(const Win32Window& owner, int minimumHideDelayTime);
 
   /// <summary>
   /// Release OS resources associated with window.
@@ -97,6 +96,9 @@ public:
 
   // window handle for top level window.
   HWND _hWindow = nullptr;
+
+  // minimum time the splash screen should be visible in MS.
+  int _minimumHideDelayTime = 0;
 
   bool _classRegistered = false;
 };
