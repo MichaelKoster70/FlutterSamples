@@ -30,7 +30,7 @@ FlutterWindow::~FlutterWindow()
 bool FlutterWindow::OnCreate()
 {
    // Show the splash screen while the Flutter engine is starting up
-   _splashScreen.Create(*this, 500);
+   _splashScreen.Show(*this, 250);
 
    RECT frame = GetClientArea();
 
@@ -49,7 +49,7 @@ bool FlutterWindow::OnCreate()
    _flutterController->engine()->SetNextFrameCallback([&]()
       {
          this->Show();
-         _splashScreen.Destroy();
+         _splashScreen.Hide();
       });
 
    // Flutter can complete the first frame before the "show window" callback is
