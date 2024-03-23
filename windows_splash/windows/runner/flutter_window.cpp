@@ -29,8 +29,8 @@ FlutterWindow::~FlutterWindow()
 
 bool FlutterWindow::OnCreate()
 {
-   // Show the splash screen while the Flutter engine is starting up.
-   _splashScreen.Create(*this);
+   // Show the splash screen while the Flutter engine is starting up
+   _splashScreen.Create(*this, 500);
 
    RECT frame = GetClientArea();
 

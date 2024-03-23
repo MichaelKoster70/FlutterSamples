@@ -27,11 +27,12 @@ Win32SplashScreen::~Win32SplashScreen()
    Destroy();
 }
 
-bool Win32SplashScreen::Create(const Win32Window& owner)
+bool Win32SplashScreen::Create(const Win32Window& owner, int minimumHideDelayTime)
 {
+   _minimumHideDelayTime = minimumHideDelayTime;
    const wchar_t* wndClass = GetWindowClass();
 
-
+   // Create the window
    auto window = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOPMOST, wndClass, L"", WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
 
    if (!window)
@@ -39,7 +40,8 @@ bool Win32SplashScreen::Create(const Win32Window& owner)
       return false;
    }
 
-   RECT ownerRect;
+   // Show the window, on top of the owner window
+   RECT ownerRect{};
    GetWindowRect(owner.GetHandle(), &ownerRect);
    LoadSplashImage(window, POINT{ ownerRect.left, ownerRect.top });
 
@@ -116,7 +118,14 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, POINT origin)
       blendFunction.AlphaFormat = AC_SRC_ALPHA;
       blendFunction.BlendFlags = 0;
 
+#if true 
       UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
+#else
+      ShowWindow(windows, SW_SHOWNOACTIVATE);
+      SetWindowPos(windows, HWND_TOPMOST, origin.x, origin.y, sizeSplash.cx, sizeSplash.cy, SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOOWNERZORDER | SWP_NOZORDER);
+      BitBlt(hdcScreen, origin.x, origin.y, sizeSplash.cx, sizeSplash.cy, hdcMem, 0, 0, SRCCOPY);
+#endif
+
       SelectObject(hdcMem, hbmOld);
       DeleteDC(hdcMem);
       ReleaseDC(nullptr, hdcScreen);
@@ -159,7 +168,7 @@ void Win32SplashScreen::Destroy()
    if (_hWindow)
    {
       // destroy the window after a short delay to allow the window to be painted
-      SetTimer(_hWindow, 1, 500, nullptr);
+      SetTimer(_hWindow, 1, _minimumHideDelayTime, nullptr);
    }
 }
 
