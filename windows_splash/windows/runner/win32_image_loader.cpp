@@ -108,8 +108,7 @@ IWICBitmapSourcePtr ImageLoader::LoadPngBitmap(IStreamPtr imageStream)
          return nullptr;
       }
 
-      IWICBitmapSourcePtr bitmapSource;
-      if (SUCCEEDED(WICConvertBitmapSource(GUID_WICPixelFormat32bppPBGRA, frame, &bitmapSource)))
+      if (IWICBitmapSourcePtr bitmapSource; SUCCEEDED(WICConvertBitmapSource(GUID_WICPixelFormat32bppPBGRA, frame, &bitmapSource)))
       {
          return bitmapSource;
       }
