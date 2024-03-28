@@ -28,15 +28,16 @@ Win32SplashScreen::~Win32SplashScreen()
    Destroy();
 }
 
-bool Win32SplashScreen::Show(const Win32Window& owner, int minimumHideDelayTime)
+bool Win32SplashScreen::Show(const Win32Window& owner, int minimumHideDelayTime, int maximumHideDelayTime)
 {
    _minimumHideDelayTime = minimumHideDelayTime;
+   _maximumHideDelayTime = maximumHideDelayTime;
    const wchar_t* wndClass = GetWindowClass();
 
-   // Create the window
-   auto window = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOPMOST, wndClass, L"", WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
+   // Create the layered window that will display the splash screen
+   auto hWindow = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOPMOST, wndClass, L"", WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, nullptr, nullptr, GetModuleHandle(nullptr), this);
 
-   if (!window)
+   if (!hWindow)
    {
       return false;
    }
@@ -44,7 +45,8 @@ bool Win32SplashScreen::Show(const Win32Window& owner, int minimumHideDelayTime)
    // Show the window, on top of the owner window
    RECT ownerRect{};
    GetWindowRect(owner.GetHandle(), &ownerRect);
-   LoadSplashImage(window, ownerRect);
+   LoadSplashImage(hWindow, ownerRect);
+   ArmAutoHideTimer();
 
    return true;
 }
@@ -54,31 +56,31 @@ void Win32SplashScreen::Hide()
    if (_hWindow)
    {
       // destroy the window after a short delay to allow the window to be painted
-      SetTimer(_hWindow, 1, _minimumHideDelayTime, nullptr);
+      SetTimer(_hWindow, g_timerId, _minimumHideDelayTime, nullptr);
    }
 }
 
-// static window procedure
-LRESULT CALLBACK Win32SplashScreen::WndProc(HWND const hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
+LRESULT CALLBACK Win32SplashScreen::StaticWndProc(HWND const hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
 {
    if (message == WM_NCCREATE)
    {
+      // store the 'this' pointer in the window user data
       auto wndStruct = reinterpret_cast<CREATESTRUCT*>(lParam);
       SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wndStruct->lpCreateParams));
 
-      auto that = static_cast<Win32SplashScreen*>(wndStruct->lpCreateParams);
+      auto instance = static_cast<Win32SplashScreen*>(wndStruct->lpCreateParams);
       EnableNonClientDpiScaling(hWnd);
-      that->_hWindow = hWnd;
+      instance->_hWindow = hWnd;
    }
-   else if (Win32SplashScreen* that = GetThisFromHandle(hWnd))
+   else if (auto instance = GetThisFromHandle(hWnd))
    {
-      return that->MessageHandler(hWnd, message, wParam, lParam);
+      return instance->WndProc(hWnd, message, wParam, lParam);
    }
 
    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-LRESULT Win32SplashScreen::MessageHandler(HWND hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
+LRESULT Win32SplashScreen::WndProc(HWND hWnd, UINT const message, WPARAM const wParam, LPARAM const lParam) noexcept
 {
    switch (message)
    {
@@ -122,16 +124,9 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, RECT ownerRect)
       HDC hdcMem = CreateCompatibleDC(hdcScreen);
       auto hbmOld = SelectObject(hdcMem, hBitmap);
 
-#if true 
       // BlendOp = AC_SRC_OVER, SourceConstantAlpha = 255, AlphaFormat = AC_SRC_ALPHA, BlendFlags = 0
       BLENDFUNCTION blendFunction{ AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
       UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
-#else
-      // approach without using UpdateLayeredWindow
-      ShowWindow(windows, SW_SHOWNOACTIVATE);
-      SetWindowPos(windows, HWND_TOPMOST, origin.x, origin.y, sizeSplash.cx, sizeSplash.cy, SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOOWNERZORDER | SWP_NOZORDER);
-      BitBlt(hdcScreen, origin.x, origin.y, sizeSplash.cx, sizeSplash.cy, hdcMem, 0, 0, SRCCOPY);
-#endif
 
       SelectObject(hdcMem, hbmOld);
       DeleteDC(hdcMem);
@@ -163,7 +158,7 @@ const wchar_t* Win32SplashScreen::GetWindowClass()
       windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
       windowClass.hbrBackground = 0;
       windowClass.lpszMenuName = nullptr;
-      windowClass.lpfnWndProc = Win32SplashScreen::WndProc;
+      windowClass.lpfnWndProc = Win32SplashScreen::StaticWndProc;
       RegisterClass(&windowClass);
       _classRegistered = true;
    }
@@ -177,6 +172,14 @@ void Win32SplashScreen::UnregisterWindowClass()
    {
       UnregisterClass(g_WindowClassName, nullptr);
       _classRegistered = false;
+   }
+}
+
+void Win32SplashScreen::ArmAutoHideTimer()
+{
+   if (_hWindow)
+   {
+      SetTimer(_hWindow, g_timerId, _maximumHideDelayTime, nullptr);
    }
 }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  // delay initialization to simulate a long running task
+  await Future.delayed(const Duration(seconds: 5));
+
   runApp(const MyApp());
 }
 
