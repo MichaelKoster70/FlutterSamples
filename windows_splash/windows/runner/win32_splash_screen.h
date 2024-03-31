@@ -120,6 +120,7 @@ private:
 
    // minimum time the splash screen should be visible in ms.
    int _maximumHideDelayTime = 0;
-
+   
+   // flag to indicate if the window class has been registered.
    bool _classRegistered = false;
 };

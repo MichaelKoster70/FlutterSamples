@@ -1,9 +1,19 @@
 // ----------------------------------------------------------------------------
+// <copyright company="Michael Koster">
+//   Copyright (c) Michael Koster. All rights reserved.
+//   Licensed under the MIT License.
+// </copyright>
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
 #include <windows.h>
 #include "win32_image_loader.h"
 
+// ----------------------------------------------------------------------------
+// Linker directives
+// ----------------------------------------------------------------------------
 #pragma comment(lib, "windowscodecs.lib")
 
 // -----------------------------------------------------------------------------
@@ -122,10 +132,9 @@ IWICBitmapSourcePtr ImageLoader::LoadPngBitmap(IStreamPtr imageStream)
 
 HBITMAP ImageLoader::CreateBitmap(IWICBitmapSourcePtr bitmapSource)
 {
-   HBITMAP hBitmap = nullptr;
-
    UINT width = 0;
    UINT height = 0;
+
    if (FAILED(bitmapSource->GetSize(&width, &height)) || width == 0 || height == 0)
    {
       return nullptr;
@@ -142,7 +151,7 @@ HBITMAP ImageLoader::CreateBitmap(IWICBitmapSourcePtr bitmapSource)
 
    void* pvImageBits = nullptr;
    HDC hdcScreen = GetDC(nullptr);
-   hBitmap = CreateDIBSection(hdcScreen, &bitmapInfo, DIB_RGB_COLORS, &pvImageBits, nullptr, 0);
+   HBITMAP hBitmap = CreateDIBSection(hdcScreen, &bitmapInfo, DIB_RGB_COLORS, &pvImageBits, nullptr, 0);
    ReleaseDC(NULL, hdcScreen);
 
    if (hBitmap != nullptr)
@@ -154,9 +163,10 @@ HBITMAP ImageLoader::CreateBitmap(IWICBitmapSourcePtr bitmapSource)
       {
          // couldn't extract image; delete HBITMAP
          DeleteObject(hBitmap);
-         hBitmap = NULL;
+         hBitmap = nullptr;
       }
    }
+
    if (hBitmap == nullptr)
    {
       return nullptr;
