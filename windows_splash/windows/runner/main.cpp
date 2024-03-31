@@ -14,7 +14,6 @@
 
 #include "flutter_window.h"
 #include "utils.h"
-#include "win32_splash_screen.h"
 
 // ----------------------------------------------------------------------------
 // Class implementations
@@ -26,6 +25,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    UNREFERENCED_PARAMETER(hPrevInstance);
    UNREFERENCED_PARAMETER(pCmdLine);
    UNREFERENCED_PARAMETER(nCmdShow);
+
    // Attach to console when present (e.g., 'flutter run') or create a new console when running with a debugger.
    if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::IsDebuggerPresent())
    {
