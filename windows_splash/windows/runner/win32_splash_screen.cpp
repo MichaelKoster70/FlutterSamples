@@ -20,6 +20,11 @@ constexpr const wchar_t g_WindowClassName[] = L"SplashWindow";
 constexpr const int g_timerId = 1;
 
 // ----------------------------------------------------------------------------
+// Linker directives
+// ----------------------------------------------------------------------------
+#pragma comment(lib, "Shcore.lib")
+
+// ----------------------------------------------------------------------------
 // Class implementations
 // ----------------------------------------------------------------------------
 
@@ -110,13 +115,16 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, RECT ownerRect)
 {
    ImageLoader loader;
 
-   HBITMAP hBitmap = loader.Load(MAKEINTRESOURCE(IDB_SPLASH_SCREEN));
+   double scaleFactor = 1.0;
+   LPCTSTR resource = GetResourceWithScale(ownerRect, scaleFactor);
+
+   HBITMAP hBitmap = loader.Load(resource);
    if (hBitmap)
    {
       POINT ptZero { 0 };
       BITMAP bitmap{};
       GetObject(hBitmap, sizeof(BITMAP), &bitmap);
-      SIZE sizeSplash { bitmap.bmWidth, bitmap.bmHeight };
+      SIZE sizeSplash{ static_cast<LONG>(bitmap.bmWidth * scaleFactor), static_cast<LONG>(bitmap.bmHeight * scaleFactor) };
 
       auto origin = CenterWindow(ownerRect, sizeSplash);
 
@@ -132,6 +140,79 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, RECT ownerRect)
       DeleteDC(hdcMem);
       ReleaseDC(nullptr, hdcScreen);
       DeleteObject(hBitmap);
+   }
+}
+
+LPCTSTR Win32SplashScreen::GetResourceWithScale(const RECT& ownerRect, double& scaleFactor)
+{
+   const POINT targetPoint = { ownerRect.left, ownerRect.top };
+   HMONITOR monitor = MonitorFromPoint(targetPoint, MONITOR_DEFAULTTONEAREST);
+
+   if (DEVICE_SCALE_FACTOR deviceScaleFactor{}; SUCCEEDED(GetScaleFactorForMonitor(monitor, &deviceScaleFactor)))
+   {
+      switch (deviceScaleFactor)
+      {
+      case DEVICE_SCALE_FACTOR::SCALE_100_PERCENT:
+         scaleFactor = 1.0;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_100);
+
+      case DEVICE_SCALE_FACTOR::SCALE_120_PERCENT:
+         scaleFactor = 0.6;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_140_PERCENT:
+         scaleFactor = 0.7;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_150_PERCENT:
+         scaleFactor = 0.75;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_160_PERCENT:
+         scaleFactor = 0.8;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_180_PERCENT:
+         scaleFactor = 0.9;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_200_PERCENT:
+         scaleFactor = 1.0;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_225_PERCENT:
+         scaleFactor = 0.5625;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      case DEVICE_SCALE_FACTOR::SCALE_250_PERCENT:
+         scaleFactor = 0.625;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      case DEVICE_SCALE_FACTOR::SCALE_300_PERCENT:
+         scaleFactor = 0.75;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      case DEVICE_SCALE_FACTOR::SCALE_400_PERCENT:
+         scaleFactor = 1.0;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      case DEVICE_SCALE_FACTOR::SCALE_450_PERCENT:
+         scaleFactor = 1.125;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      case DEVICE_SCALE_FACTOR::SCALE_500_PERCENT:
+         scaleFactor = 1.25;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
+      default:
+         scaleFactor = 1.0;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_100);
+      }
+   }
+   else
+   {
+      scaleFactor = 1.0;
+      return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_100);
    }
 }
 

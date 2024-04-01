@@ -50,17 +50,17 @@ END
 // Icon
 //
 
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
+// Icon with lowest ID value placed first to ensure application icon remains consistent on all systems.
 IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Bitmap
+// PNG
 //
 
-IDB_SPLASH_SCREEN       PNG                    "resources\splash_screen.png"
-IDB_SPLASH_SCREEN_2       PNG                    "resources\splash_screen_round.png"
+IDB_SPLASH_SCREEN_100       PNG                  "resources\splash_screen_100.png"
+IDB_SPLASH_SCREEN_200       PNG                  "resources\splash_screen_200.png"
+IDB_SPLASH_SCREEN_400       PNG                  "resources\splash_screen_400.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //
