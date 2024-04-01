@@ -10,6 +10,7 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include <windows.h>
+#include <shellscalingapi.h>
 #include "win32_window.h"
 #include <functional>
 #include <memory>
@@ -77,6 +78,14 @@ private:
    static void LoadSplashImage(HWND windows, RECT ownerRect);
 
    /// <summary>
+   /// Gets the resource name and scale factor for the device.
+   /// </summary>
+   /// <param name="ownerRect">The onwer rect.</param>
+   /// <param name="scaleFactor">The factor by which the resource shall be shrunk (1.0 or smaller).</param>
+   /// <returns>The resource to load.</returns>
+   static LPCTSTR GetResourceWithScale(const RECT& ownerRect, double& scaleFactor);
+
+   /// <summary>
    /// Centers the window on the owner window.
    /// </summary>
    /// <param name="ownerRect">The ocation and size of the owner.</param>
@@ -120,7 +129,6 @@ private:
 
    // minimum time the splash screen should be visible in ms.
    int _maximumHideDelayTime = 0;
-   
-   // flag to indicate if the window class has been registered.
+
    bool _classRegistered = false;
 };
