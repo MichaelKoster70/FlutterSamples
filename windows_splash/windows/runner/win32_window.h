@@ -10,6 +10,7 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include <windows.h>
+
 #include <functional>
 #include <memory>
 #include <string>
@@ -147,4 +148,7 @@ public:
 
   // window handle for hosted content.
   HWND _hContentWindow = nullptr;
+
+  // The number of Win32Window objects that currently exist.
+  static int s_activeWindowCount;
 };

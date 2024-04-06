@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -38,7 +39,6 @@ END
 
 3 TEXTINCLUDE
 BEGIN
-    "\r\n"
     "\0"
 END
 
@@ -96,14 +96,14 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Michael Koster" "\0"
-            VALUE "FileDescription", "windows_background_task" "\0"
-            VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "windows_background_task" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 Michael Koster. All rights reserved." "\0"
-            VALUE "OriginalFilename", "windows_background_task.exe" "\0"
-            VALUE "ProductName", "windows_background_task" "\0"
-            VALUE "ProductVersion", VERSION_AS_STRING "\0"
+            VALUE "CompanyName", "Michael Koster"
+            VALUE "FileDescription", "windows Splash Screen Sample"
+            VALUE "FileVersion", VERSION_AS_STRING
+            VALUE "InternalName", "windows_splash"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Michael Koster. All rights reserved."
+            VALUE "OriginalFilename", "windows_splash.exe"
+            VALUE "ProductName", "windows_slpash"
+            VALUE "ProductVersion", VERSION_AS_STRING
         END
     END
     BLOCK "VarFileInfo"

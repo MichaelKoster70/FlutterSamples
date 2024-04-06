@@ -17,14 +17,12 @@
 // ----------------------------------------------------------------------------
 
 /// <summary>
-/// Creates a console for the process, and redirects stdout and stderr to
-// it for both the runner and the Flutter library if needed.
+/// Attach to console when present (e.g., 'flutter run') or create a new console when running with a debugger.
 /// </summary>
 void CreateAndAttachConsoleIfNeeded();
 
 /// <summary>
-/// Creates a console for the process, and redirects stdout and stderr to
-// it for both the runner and the Flutter library.
+/// Creates a console for the process, and redirects stdout and stderr to it for both the runner and the Flutter library.
 /// </summary>
 void CreateAndAttachConsole();
 

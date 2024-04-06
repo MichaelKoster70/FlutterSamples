@@ -19,9 +19,9 @@
 // -----------------------------------------------------------------------------
 // Typedefs
 // -----------------------------------------------------------------------------
-typedef _com_ptr_t<_com_IIID<IWICImagingFactory, &__uuidof(IWICImagingFactory)>> IWICImagingFactoryPtr;
-typedef _com_ptr_t<_com_IIID<IWICBitmapDecoder, &__uuidof(IWICBitmapDecoder)>> IWICBitmapDecoderPtr;
-typedef _com_ptr_t<_com_IIID<IWICBitmapFrameDecode, &__uuidof(IWICBitmapFrameDecode)>> IWICBitmapFrameDecodePtr;
+using IWICImagingFactoryPtr = _com_ptr_t<_com_IIID<IWICImagingFactory, &__uuidof(IWICImagingFactory)>>;
+using IWICBitmapDecoderPtr = _com_ptr_t<_com_IIID<IWICBitmapDecoder, &__uuidof(IWICBitmapDecoder)>>;
+using IWICBitmapFrameDecodePtr = _com_ptr_t<_com_IIID<IWICBitmapFrameDecode, &__uuidof(IWICBitmapFrameDecode)>>;
 
 // ----------------------------------------------------------------------------
 // Class implementations
@@ -31,8 +31,7 @@ HBITMAP ImageLoader::Load(LPCTSTR lpName)
 {
    HBITMAP hBitmap = nullptr;
 
-   auto imageStream = LoadStream(lpName, L"PNG");
-   if (imageStream != nullptr)
+   if (auto imageStream = LoadStream(lpName, L"PNG"); imageStream != nullptr)
    {
       auto bitmapSource = LoadPngBitmap(imageStream);
       if (bitmapSource != nullptr)
@@ -44,7 +43,7 @@ HBITMAP ImageLoader::Load(LPCTSTR lpName)
   return hBitmap;
 }
 
-IStreamPtr ImageLoader::LoadStream(LPCTSTR lpName, LPCTSTR lpType)
+IStreamPtr ImageLoader::LoadStream(LPCTSTR lpName, LPCTSTR lpType) const
 {
    // find the resource
    HRSRC hResInfo = FindResource(nullptr, lpName, lpType);
@@ -62,7 +61,7 @@ IStreamPtr ImageLoader::LoadStream(LPCTSTR lpName, LPCTSTR lpType)
    }
 
    // lock the image resource
-   LPVOID pImageData = LockResource(hImageData);
+   auto pImageData = LockResource(hImageData);
 
    // allocate a buffer for the image
    HGLOBAL hBuffer = GlobalAlloc(GMEM_MOVEABLE, imageSize);
@@ -93,7 +92,7 @@ IStreamPtr ImageLoader::LoadStream(LPCTSTR lpName, LPCTSTR lpType)
    return stream;
 }
 
-IWICBitmapSourcePtr ImageLoader::LoadPngBitmap(IStreamPtr imageStream)
+IWICBitmapSourcePtr ImageLoader::LoadPngBitmap(IStreamPtr imageStream) const
 {
    try
    {
@@ -105,8 +104,7 @@ IWICBitmapSourcePtr ImageLoader::LoadPngBitmap(IStreamPtr imageStream)
       }
 
       // check if there is at least one frame
-      UINT nFrameCount = 0;
-      if (FAILED(pngDecoder->GetFrameCount(&nFrameCount)) || nFrameCount == 0)
+      if (UINT nFrameCount = 0; FAILED(pngDecoder->GetFrameCount(&nFrameCount)) || nFrameCount == 0)
       {
          return nullptr;
       }
@@ -152,7 +150,7 @@ HBITMAP ImageLoader::CreateBitmap(IWICBitmapSourcePtr bitmapSource)
    void* pvImageBits = nullptr;
    HDC hdcScreen = GetDC(nullptr);
    HBITMAP hBitmap = CreateDIBSection(hdcScreen, &bitmapInfo, DIB_RGB_COLORS, &pvImageBits, nullptr, 0);
-   ReleaseDC(NULL, hdcScreen);
+   ReleaseDC(nullptr, hdcScreen);
 
    if (hBitmap != nullptr)
    { 

@@ -89,6 +89,9 @@ LRESULT Win32SplashScreen::WndProc(HWND hWnd, UINT const message, WPARAM const w
 {
    switch (message)
    {
+   default:
+      break;
+
    case WM_TIMER:
       Destroy();
       return 0;
@@ -132,7 +135,7 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, RECT ownerRect)
       HDC hdcMem = CreateCompatibleDC(hdcScreen);
       auto hbmOld = SelectObject(hdcMem, hBitmap);
 
-      // BlendOp = AC_SRC_OVER, SourceConstantAlpha = 255, AlphaFormat = AC_SRC_ALPHA, BlendFlags = 0
+      // Members intialized as BlendOp = AC_SRC_OVER, SourceConstantAlpha = 255, AlphaFormat = AC_SRC_ALPHA, BlendFlags = 0
       BLENDFUNCTION blendFunction{ AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
       UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
 
@@ -152,12 +155,16 @@ LPCTSTR Win32SplashScreen::GetResourceWithScale(const RECT& ownerRect, double& s
    {
       switch (deviceScaleFactor)
       {
-      case DEVICE_SCALE_FACTOR::SCALE_100_PERCENT:
+      default: // for unknown scale factors, use 100%
          scaleFactor = 1.0;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_100);
 
       case DEVICE_SCALE_FACTOR::SCALE_120_PERCENT:
          scaleFactor = 0.6;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_125_PERCENT:
+         scaleFactor = 0.625;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
 
       case DEVICE_SCALE_FACTOR::SCALE_140_PERCENT:
@@ -170,6 +177,10 @@ LPCTSTR Win32SplashScreen::GetResourceWithScale(const RECT& ownerRect, double& s
 
       case DEVICE_SCALE_FACTOR::SCALE_160_PERCENT:
          scaleFactor = 0.8;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
+
+      case DEVICE_SCALE_FACTOR::SCALE_175_PERCENT:
+         scaleFactor = 0.875;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_200);
 
       case DEVICE_SCALE_FACTOR::SCALE_180_PERCENT:
@@ -192,6 +203,10 @@ LPCTSTR Win32SplashScreen::GetResourceWithScale(const RECT& ownerRect, double& s
          scaleFactor = 0.75;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
 
+      case DEVICE_SCALE_FACTOR::SCALE_350_PERCENT:
+         scaleFactor = 0.875;
+         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
+
       case DEVICE_SCALE_FACTOR::SCALE_400_PERCENT:
          scaleFactor = 1.0;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
@@ -203,10 +218,6 @@ LPCTSTR Win32SplashScreen::GetResourceWithScale(const RECT& ownerRect, double& s
       case DEVICE_SCALE_FACTOR::SCALE_500_PERCENT:
          scaleFactor = 1.25;
          return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_400);
-
-      default:
-         scaleFactor = 1.0;
-         return MAKEINTRESOURCE(IDB_SPLASH_SCREEN_100);
       }
    }
    else
@@ -237,7 +248,7 @@ const wchar_t* Win32SplashScreen::GetWindowClass()
       windowClass.cbWndExtra = 0;
       windowClass.hInstance = GetModuleHandle(nullptr);
       windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
-      windowClass.hbrBackground = 0;
+      windowClass.hbrBackground = nullptr;
       windowClass.lpszMenuName = nullptr;
       windowClass.lpfnWndProc = Win32SplashScreen::StaticWndProc;
       RegisterClass(&windowClass);

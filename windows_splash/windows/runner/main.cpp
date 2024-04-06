@@ -26,11 +26,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    UNREFERENCED_PARAMETER(pCmdLine);
    UNREFERENCED_PARAMETER(nCmdShow);
 
-   // Attach to console when present (e.g., 'flutter run') or create a new console when running with a debugger.
-   if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::IsDebuggerPresent())
-   {
-      CreateAndAttachConsole();
-   }
+   CreateAndAttachConsoleIfNeeded();
 
    // Initialize COM, so that it is available for use in the library and/or plugins.
    (void)::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -42,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
    project.set_dart_entrypoint_arguments(std::move(commandLineArguments));
 
    FlutterWindow window(project);
-   Win32Window::Point origin(10, 10);
+   Win32Window::Point origin(10, 10); 
    Win32Window::Size size(1280, 720);
    if (!window.Create(L"Windows Splash Screen", origin, size))
    {

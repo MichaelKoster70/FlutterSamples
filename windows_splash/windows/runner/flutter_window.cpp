@@ -46,7 +46,7 @@ bool FlutterWindow::OnCreate()
    RegisterPlugins(_flutterController->engine());
    SetChildContent(_flutterController->view()->GetNativeWindow());
 
-   _flutterController->engine()->SetNextFrameCallback([&]()
+   _flutterController->engine()->SetNextFrameCallback([this]()
       {
          this->Show();
          _splashScreen.Hide();
