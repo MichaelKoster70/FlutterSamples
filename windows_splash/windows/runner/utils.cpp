@@ -70,26 +70,22 @@ std::vector<std::string> GetCommandLineArguments()
 }
 
 std::string Utf8FromUtf16(const wchar_t* utf16String)
- {
+{
    if (utf16String == nullptr)
    {
       return std::string();
    }
-
    int targetLength = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String, -1, nullptr, 0, nullptr, nullptr) - 1; // remove the trailing null character
-   int inputLength = (int)wcslen(utf16String);
+   auto inputLength = (int)wcslen(utf16String);
    std::string utf8String;
    if (targetLength <= 0 || targetLength > utf8String.max_size())
    {
       return utf8String;
    }
-
    utf8String.resize(targetLength);
-   int converted_length = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String, inputLength, utf8String.data(), targetLength, nullptr, nullptr);
-   if (converted_length == 0)
+   if (int convertedLength = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, utf16String, inputLength, utf8String.data(), targetLength, nullptr, nullptr); convertedLength == 0)
    {
       return std::string();
    }
-
    return utf8String;
 }

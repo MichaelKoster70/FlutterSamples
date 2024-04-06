@@ -1,7 +1,8 @@
 # ----------------------------------------------------------------------------
 # <copyright company="Michael Koster">
 #   Copyright (c) Michael Koster. All rights reserved.
-#   Licensed under the MIT License.# </copyright>
+#   Licensed under the MIT License.
+# </copyright>
 # ----------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.14)
 project(runner LANGUAGES CXX)
@@ -14,6 +15,7 @@ add_executable(${BINARY_NAME} WIN32
   "flutter_window.h"
   "flutter_window.cpp"
   "main.cpp"
+  "utils.h"
   "utils.cpp"
   "win32_window.h"
   "win32_window.cpp"

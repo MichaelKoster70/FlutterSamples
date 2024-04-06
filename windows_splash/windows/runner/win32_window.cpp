@@ -34,11 +34,9 @@ constexpr const wchar_t kWindowClassName[] = L"FLUTTER_RUNNER_WIN32_WINDOW";
 constexpr const wchar_t kGetPreferredBrightnessRegKey[] = L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
 constexpr const wchar_t kGetPreferredBrightnessRegValue[] = L"AppsUseLightTheme";
 
-// ----------------------------------------------------------------------------
-// Global variables
-// ----------------------------------------------------------------------------
-// The number of Win32Window objects that currently exist.
-static int g_activeWindowCount = 0;
+// -----------------------------------------------------------------------------
+// Functions
+// -----------------------------------------------------------------------------
 
 /// <summary>
 /// Scale helper to convert logical scaler values to physical using passed in scale factor
@@ -86,7 +84,7 @@ public:
          windowClass.cbWndExtra = 0;
          windowClass.hInstance = GetModuleHandle(nullptr);
          windowClass.hIcon = LoadIcon(windowClass.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
-         windowClass.hbrBackground = 0;
+         windowClass.hbrBackground = nullptr;
          windowClass.lpszMenuName = nullptr;
          windowClass.lpfnWndProc = Win32Window::WndProc;
          RegisterClass(&windowClass);
@@ -116,12 +114,12 @@ WindowClassRegistrar* WindowClassRegistrar::_instance = nullptr;
 
 Win32Window::Win32Window()
 {
-   ++g_activeWindowCount;
+   ++s_activeWindowCount;
 }
 
 Win32Window::~Win32Window()
 {
-   --g_activeWindowCount;
+   --s_activeWindowCount;
    Destroy();
 }
 
@@ -222,6 +220,9 @@ LRESULT Win32Window::MessageHandler(HWND hWnd, UINT const message, WPARAM const 
    case WM_DWMCOLORIZATIONCOLORCHANGED:
       UpdateTheme(hWnd);
       return 0;
+
+   default:
+      break;
    }
 
    return DefWindowProc(_hWindow, message, wParam, lParam);
@@ -237,7 +238,7 @@ void Win32Window::Destroy()
       _hWindow = nullptr;
    }
 
-   if (g_activeWindowCount == 0)
+   if (s_activeWindowCount == 0)
    {
       WindowClassRegistrar::GetInstance()->UnregisterWindowClass();
    }
@@ -300,3 +301,5 @@ void Win32Window::UpdateTheme(HWND const hWindow)
       DwmSetWindowAttribute(hWindow, DWMWA_USE_IMMERSIVE_DARK_MODE, &enableDarkMode, sizeof(enableDarkMode));
    }
 }
+
+int Win32Window::s_activeWindowCount = 0;

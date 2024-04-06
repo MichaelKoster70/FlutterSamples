@@ -41,7 +41,7 @@ public:
     /// <param name="owner">The window owning the splash screen.</param>
     /// <param name="minimumHideDelayTime">The minimum time the splash screen should be visible in ms.</param>
     /// <param name="maximumHideDelayTime">The maximum time the splash screen should be visible in ms.</param>
-    // <returns>Returns true successful,else false.</returns>
+    /// <returns>Returns true successful,else false.</returns>
    bool Show(const Win32Window& owner, int minimumHideDelayTime, int maximumHideDelayTime = DefaultMaximumHideDelayTime);
 
    /// <summary>

@@ -15,8 +15,8 @@
 // -----------------------------------------------------------------------------
 // Typedefs
 // -----------------------------------------------------------------------------
-typedef _com_ptr_t<_com_IIID<IStream, &__uuidof(IStream)>> IStreamPtr;
-typedef _com_ptr_t<_com_IIID<IWICBitmapSource, &__uuidof(IWICBitmapSource)>> IWICBitmapSourcePtr;
+using IStreamPtr = _com_ptr_t<_com_IIID<IStream, &__uuidof(IStream)>>;
+using IWICBitmapSourcePtr =  _com_ptr_t<_com_IIID<IWICBitmapSource, &__uuidof(IWICBitmapSource)>>;
 
 /// <summary>
 /// Utility class to load images from win32 app resources.
@@ -41,14 +41,14 @@ private:
    /// <param name="lpName">The name or ID of the resource.</param>
    /// <param name="lpType">The resource type.</param>
    /// <returns>The stream holding the resource, nullptr in case of failure.</returns>
-   IStreamPtr LoadStream(LPCTSTR lpName, LPCTSTR lpType);
+   IStreamPtr LoadStream(LPCTSTR lpName, LPCTSTR lpType) const;
 
    /// <summary>
    /// Decode the PNG image stream into a bitmap source.
    /// </summary>
    /// <param name="imageStream">The stream to load the image from</param>
    /// <returns>COM smart pointer holding the image.</returns>
-   IWICBitmapSourcePtr LoadPngBitmap(IStreamPtr imageStream);
+   IWICBitmapSourcePtr LoadPngBitmap(IStreamPtr imageStream) const;
 
    /// <summary>
    /// Create a bitmap from a bitmap source.
