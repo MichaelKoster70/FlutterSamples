@@ -4,11 +4,11 @@
 #   Licensed under the MIT License.
 # </copyright>
 # ----------------------------------------------------------------------------
-name: windows_splash
-description: "A Flutter sample on how to integrate a native splash screen."
+name: windows_single_instance
+description: "A sample Flutter Sample to demonstrate how to create a single instance application"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
   sdk: '>=3.3.2 <4.0.0'
@@ -26,4 +26,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
