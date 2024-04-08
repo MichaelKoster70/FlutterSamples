@@ -58,7 +58,7 @@ bool Win32SingleInstanceSafeguard::IsAnotherInstanceRunning(HINSTANCE hInstance)
    return false;
 }
 
-std::wstring Win32SingleInstanceSafeguard::GetMutexNameBasedOnModuleName(HINSTANCE hInstance)
+std::wstring Win32SingleInstanceSafeguard::GetMutexNameBasedOnModuleName(HINSTANCE hInstance) const
 {
    auto buffer = GetModuleNameFromInstance(hInstance);
    if (buffer.empty())
@@ -89,7 +89,7 @@ void Win32SingleInstanceSafeguard::ActivateExistingInstance()
    // Get the our own module path 
 
    EnumWindows([](HWND hWnd, LPARAM lParam) -> BOOL {
-      Win32SingleInstanceSafeguard* classInstance = reinterpret_cast<Win32SingleInstanceSafeguard*>(lParam);
+      const auto* classInstance = reinterpret_cast<Win32SingleInstanceSafeguard*>(lParam);
 
       // Get the window class name
       wchar_t buffer[256];
@@ -97,9 +97,8 @@ void Win32SingleInstanceSafeguard::ActivateExistingInstance()
       {
          return TRUE;
       }
-      auto className = buffer;
-
-      if (className != classInstance->windowClasName)
+      
+      if (auto className = buffer; className != classInstance->windowClasName)
       {
          // not the window we are looking for, continue
          return TRUE;
@@ -114,8 +113,7 @@ void Win32SingleInstanceSafeguard::ActivateExistingInstance()
       if (thisModuleName == otherModuleName)
       {
          // this is our window, activate it
-         ShowWindow(hWnd, SW_RESTORE);
-         SetForegroundWindow(hWnd);
+         ActivateWindow(hWnd);
          return FALSE;
       }
 
@@ -123,12 +121,11 @@ void Win32SingleInstanceSafeguard::ActivateExistingInstance()
       }, reinterpret_cast<LPARAM>(this));
 }
 
-std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromInstance(HINSTANCE hInstance)
+std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromInstance(HINSTANCE hInstance) const
 {
    std::wstring buffer(MAX_PATH, '\0');
 
-   DWORD usedSize = GetModuleFileName(nullptr, buffer.data(), MAX_PATH);
-   if (usedSize > 0)
+   if (DWORD usedSize = GetModuleFileName(hInstance, buffer.data(), MAX_PATH); usedSize > 0)
    {
       return buffer;
    }
@@ -137,7 +134,7 @@ std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromInstance(HINSTANCE h
    return std::wstring();
 }
 
-std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromWindow(HWND hWnd)
+std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromWindow(HWND hWnd) const
 {
    std::wstring buffer;
    if (DWORD dwProcessId = 0; GetWindowThreadProcessId(hWnd, &dwProcessId) != 0)
@@ -151,4 +148,11 @@ std::wstring Win32SingleInstanceSafeguard::GetModuleNameFromWindow(HWND hWnd)
    }
 
    return buffer;
+}
+
+void Win32SingleInstanceSafeguard::ActivateWindow(HWND hWnd)
+{
+   // Show the window and bring it to the foreground.
+   ::ShowWindow(hWnd, SW_RESTORE);
+   ::SetForegroundWindow(hWnd);
 }
