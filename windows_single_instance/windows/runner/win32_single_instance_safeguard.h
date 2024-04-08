@@ -46,7 +46,7 @@ private:
    /// </summary>
    /// <param name="hInstance">The module instance.</param>
    /// <returns>The mutex name.</returns>
-   std::wstring GetMutexNameBasedOnModuleName(HINSTANCE hInstance);
+   std::wstring GetMutexNameBasedOnModuleName(HINSTANCE hInstance) const;
 
    /// <summary>
    /// Tries to activate the existing instance.
@@ -58,15 +58,20 @@ private:
    /// </summary>
    /// <param name="hInstance">The module instance.</param>
    /// <returns>The absolute path holding the application exe.</returns>
-   std::wstring GetModuleNameFromInstance(HINSTANCE hInstance);
+   std::wstring GetModuleNameFromInstance(HINSTANCE hInstance) const;
 
    /// <summary>
    /// Gets the application exe module name from the supplied window handle
    /// </summary>
    /// <param name="hWnd">The window handle to examine.</param>
    /// <returns>The absolute path holding the application exe.</returns>
-   std::wstring GetModuleNameFromWindow(HWND hWnd);
+   std::wstring GetModuleNameFromWindow(HWND hWnd) const;
 
+   /// <summary>
+   /// Activates the window with the provided handle.
+   /// </summary>
+   /// <param name="hWnd">The windows to activate.</param>
+   static void ActivateWindow(HWND hWnd);
 
    Win32SingleInstanceSafeguard(const Win32SingleInstanceSafeguard&) = delete;
    Win32SingleInstanceSafeguard(Win32SingleInstanceSafeguard&&) = delete;
