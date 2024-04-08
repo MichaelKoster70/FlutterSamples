@@ -19,19 +19,19 @@
 /// <summary>
 /// A class providing a mechanism to ensure only a single instance of an application is running.
 /// </summary>
-class Win32SingleInstanceLock
+class Win32SingleInstanceSafeguard
 {
 public:
 
    /// <summary>
    /// Creates a new instance of the Win32SingleInstanceLock class.
-   /// If the windowClasName is provided, the existing instance will be activated.
+   /// If the windowClassName is provided, the existing instance will be activated.
    /// </summary>
    /// <param name="defaultMutexName">The default mutex name.</param>
    /// <param name="windowClasName">The class name.</param>
-   Win32SingleInstanceLock(const std::wstring& defaultMutexName, const std::wstring& windowClasName = L"");
+   Win32SingleInstanceSafeguard(const std::wstring& defaultMutexName, const std::wstring& windowClasName = L"");
 
-   ~Win32SingleInstanceLock();
+   ~Win32SingleInstanceSafeguard();
 
    /// <summary>
    /// Checks if another instance of the application is running.
@@ -68,12 +68,12 @@ private:
    std::wstring GetModuleNameFromWindow(HWND hWnd);
 
 
-   Win32SingleInstanceLock(const Win32SingleInstanceLock&) = delete;
-   Win32SingleInstanceLock(Win32SingleInstanceLock&&) = delete;
-   Win32SingleInstanceLock& operator=(const Win32SingleInstanceLock&) = delete;
-   Win32SingleInstanceLock& operator=(Win32SingleInstanceLock&&) = delete;
+   Win32SingleInstanceSafeguard(const Win32SingleInstanceSafeguard&) = delete;
+   Win32SingleInstanceSafeguard(Win32SingleInstanceSafeguard&&) = delete;
+   Win32SingleInstanceSafeguard& operator=(const Win32SingleInstanceSafeguard&) = delete;
+   Win32SingleInstanceSafeguard& operator=(Win32SingleInstanceSafeguard&&) = delete;
 
-   // Handle to the mutex.
+   // Handle to the mutex ensuring only one instance.
    HANDLE hMutex = nullptr;
 
    // The default mutex name.
