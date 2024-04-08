@@ -13,7 +13,7 @@
 #include <windows.h>
 
 #include "flutter_window.h"
-#include "win32_single_instance.h"
+#include "win32_single_instance_safeguard.h"
 #include "utils.h"
 
 // ----------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 
 int APIENTRY wWinMain(_In_ [[maybe_unused]] HINSTANCE hInstance, _In_opt_ [[maybe_unused]] HINSTANCE hPrevInstance, _In_ [[maybe_unused]] PWSTR pCmdLine, _In_ [[maybe_unused]] int nCmdShow)
 {
-   Win32SingleInstanceLock appInstance(L"Windows_Single_Instance", Win32Window::GetWindowClassName());
+   Win32SingleInstanceSafeguard appInstance(L"Windows_Single_Instance", Win32Window::GetWindowClassName());
 
    if (appInstance.IsAnotherInstanceRunning(hInstance))
    {
