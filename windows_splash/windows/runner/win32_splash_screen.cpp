@@ -125,21 +125,47 @@ void Win32SplashScreen::LoadSplashImage(HWND windows, RECT ownerRect)
    if (hBitmap)
    {
       POINT ptZero { 0 };
-      BITMAP bitmap{};
-      GetObject(hBitmap, sizeof(BITMAP), &bitmap);
-      SIZE sizeSplash{ static_cast<LONG>(bitmap.bmWidth * scaleFactor), static_cast<LONG>(bitmap.bmHeight * scaleFactor) };
+      DIBSECTION dib {};
+      GetObject(hBitmap, sizeof(DIBSECTION), &dib);
+      SIZE sizeSplash{ static_cast<LONG>(dib.dsBm.bmWidth * scaleFactor), static_cast<LONG>(dib.dsBm.bmHeight * scaleFactor) };
 
       auto origin = CenterWindow(ownerRect, sizeSplash);
 
       HDC hdcScreen = GetDC(nullptr);
       HDC hdcMem = CreateCompatibleDC(hdcScreen);
-      auto hbmOld = SelectObject(hdcMem, hBitmap);
 
       // Members intialized as BlendOp = AC_SRC_OVER, SourceConstantAlpha = 255, AlphaFormat = AC_SRC_ALPHA, BlendFlags = 0
       BLENDFUNCTION blendFunction{ AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-      UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
 
-      SelectObject(hdcMem, hbmOld);
+      // Scale the bitmap to the correct size, if necessary
+      if (scaleFactor != 1.0)
+      {
+         BITMAPINFO bmi = { dib.dsBmih, 0 };
+         bmi.bmiHeader.biHeight = -dib.dsBmih.biHeight; // negative height means top-down bitmap
+
+         // Scale the bitmap to the correct size
+         void* pvBits = nullptr;
+         HBITMAP hBitmapScaled = CreateDIBSection(hdcMem, &bmi, DIB_RGB_COLORS, &pvBits, nullptr, 0);
+         if (hBitmapScaled != nullptr)
+         {
+            auto hbmOld = SelectObject(hdcMem, hBitmapScaled);
+
+             StretchDIBits(hdcMem, 0, 0, sizeSplash.cx, sizeSplash.cy, 0, 0, dib.dsBm.bmWidth,dib.dsBm.bmHeight, dib.dsBm.bmBits, &bmi, DIB_RGB_COLORS, SRCCOPY);
+             GdiFlush();
+
+             UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
+             SelectObject(hdcMem, hbmOld);
+             DeleteObject(hBitmapScaled);
+         }
+      }
+      else
+      {
+          // no scaling needed
+          auto hbmOld = SelectObject(hdcMem, hBitmap);
+          UpdateLayeredWindow(windows, hdcScreen, &origin, &sizeSplash, hdcMem, &ptZero, RGB(0, 0, 0), &blendFunction, ULW_ALPHA);
+          SelectObject(hdcMem, hbmOld);
+      }
+
       DeleteDC(hdcMem);
       ReleaseDC(nullptr, hdcScreen);
       DeleteObject(hBitmap);
