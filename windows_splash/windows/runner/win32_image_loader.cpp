@@ -165,20 +165,5 @@ HBITMAP ImageLoader::CreateBitmap(IWICBitmapSourcePtr bitmapSource)
       }
    }
 
-   if (hBitmap == nullptr)
-   {
-      return nullptr;
-   }
-
-   // extract the image into the HBITMAP
-   const UINT cbStride = width * 4;
-   const UINT cbImage = cbStride * height;
-   if (FAILED(bitmapSource->CopyPixels(nullptr, cbStride, cbImage, static_cast<BYTE*>(pvImageBits))))
-   {
-      // couldn't extract image; delete HBITMAP
-      DeleteObject(hBitmap);
-      hBitmap = nullptr;
-   }
-
    return hBitmap;
 }
