@@ -28,12 +28,11 @@ public:
    explicit FlutterWindow(const flutter::DartProject& project);
    virtual ~FlutterWindow();
 
- protected:
-  // Win32Window:
-  bool OnCreate() override;
-  void OnDestroy() override;
-  LRESULT MessageHandler(HWND window, UINT const message, WPARAM const wparam,
-                         LPARAM const lparam) noexcept override;
+protected:
+   // Win32Window:
+   bool OnCreate() override;
+   void OnDestroy() override;
+   LRESULT MessageHandler(HWND window, UINT const message, WPARAM const wparam, LPARAM const lparam) noexcept override;
 
 private:
    // The project to run.

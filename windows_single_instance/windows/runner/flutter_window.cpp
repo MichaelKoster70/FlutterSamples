@@ -45,8 +45,8 @@ bool FlutterWindow::OnCreate()
 
    _flutterController->engine()->SetNextFrameCallback([this]()
       {
-    this->Show();
-  });
+         this->Show();
+      });
 
    // Flutter can complete the first frame before the "show window" callback is
    // registered. The following call ensures a frame is pending to ensure the
@@ -56,7 +56,8 @@ bool FlutterWindow::OnCreate()
    return true;
 }
 
-void FlutterWindow::OnDestroy() {
+void FlutterWindow::OnDestroy()
+{
    if (_flutterController)
    {
       _flutterController = nullptr;
@@ -79,6 +80,9 @@ LRESULT FlutterWindow::MessageHandler(HWND hWnd, UINT const message, WPARAM cons
    {
    case WM_FONTCHANGE:
       _flutterController->engine()->ReloadSystemFonts();
+      break;
+
+   default:
       break;
    }
 

@@ -4,29 +4,17 @@
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
-// Defines the entry point for the DLL application.
+// Include file for standard system include files,
+// or project specific include files
 // ----------------------------------------------------------------------------
+#pragma once
+
+// ----------------------------------------------------------------------------
+// Defines
+// ----------------------------------------------------------------------------
+#define WIN32_LEAN_AND_MEAN   // Exclude rarely-used stuff from Windows headers
 
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "framework.h"
-
-// ----------------------------------------------------------------------------
-// Function implementations
-// ----------------------------------------------------------------------------
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
-{
-   UNREFERENCED_PARAMETER(hModule);
-   UNREFERENCED_PARAMETER(lpvReserved);
-
-   switch (fdwReason)
-   {
-   case DLL_PROCESS_ATTACH:
-   case DLL_THREAD_ATTACH:
-   case DLL_THREAD_DETACH:
-   case DLL_PROCESS_DETACH:
-      break;
-   }
-   return TRUE;
-}
+#include <windows.h>

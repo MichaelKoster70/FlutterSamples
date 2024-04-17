@@ -4,29 +4,37 @@
 //   Licensed under the MIT License.
 // </copyright>
 // ----------------------------------------------------------------------------
-// Defines the entry point for the DLL application.
+// Windows Application Model Helper API definitions
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
 #include "framework.h"
+#include "AppModelHelper.h"
+#include <VersionHelpers.h>
+#include <appmodel.h>
+#include <string>
 
 // ----------------------------------------------------------------------------
-// Function implementations
+// Function Definitions
 // ----------------------------------------------------------------------------
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
+
+BOOL WINAPI AppModelIsSupported()
 {
-   UNREFERENCED_PARAMETER(hModule);
-   UNREFERENCED_PARAMETER(lpvReserved);
+   return IsWindows7OrGreater();
+}
 
-   switch (fdwReason)
+BOOL WINAPI AppModelIsRunningWithIdentity()
+{
+   if (IsWindows7OrGreater())
    {
-   case DLL_PROCESS_ATTACH:
-   case DLL_THREAD_ATTACH:
-   case DLL_THREAD_DETACH:
-   case DLL_PROCESS_DETACH:
-      break;
+      auto buffer = std::wstring(1024, L'\0');
+      UINT32 length = 0;
+      int result = GetCurrentPackageFullName(&length, buffer.data());
+
+      return result != APPMODEL_ERROR_NO_PACKAGE;
    }
-   return TRUE;
+
+   return FALSE;
 }
