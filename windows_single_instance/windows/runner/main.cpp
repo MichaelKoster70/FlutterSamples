@@ -24,7 +24,8 @@ int APIENTRY wWinMain(_In_ [[maybe_unused]] HINSTANCE hInstance, _In_opt_ [[mayb
 {
    Win32SingleInstanceSafeguard appInstance(L"Windows_Single_Instance", Win32Window::GetWindowClassName());
 
-   if (appInstance.IsAnotherInstanceRunning(hInstance))
+   //NOSONAR
+   if (appInstance.IsAnotherInstanceRunning(hInstance)) //NOSONAR(cpp:S6004)
    {
       // exit if there is another instance running
       return EXIT_FAILURE;
